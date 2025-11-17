@@ -9,7 +9,7 @@ export default defineConfig({
       scss: {
         additionalData: `
           @use "@/shared/config/styles/colors" as colors;
-          @use "@/shared/config/styles/mixin" as mixin;
+          @use "@/shared/config/styles/mixin" as mixins;
         `,
       },
     },
@@ -17,10 +17,11 @@ export default defineConfig({
   resolve: {
     alias: {
       "@": "/src",
-      entities: "/src/entities",
-      features: "/src/features",
-      pages: "/src/pages",
-      shared: "/src/shared",
+      "@entities": "/src/entities",
+      "@features": "/src/features",
+      "@pages": "/src/pages",
+      "@shared": "/src/shared",
+      "@widgets": "/src/widgets",
     },
   },
 });
