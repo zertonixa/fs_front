@@ -1,0 +1,50 @@
+.container {
+  height: 150px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--border);
+  color: var(--sub-text);
+  font-size: 14px;
+  gap: 20px;
+  border-radius: 15px;
+  cursor: pointer;
+  min-width: 200px;
+  transition: 0.2s ease;
+  flex: 1;
+
+  &:hover {
+    background-color: var(--background-color);
+  }
+
+  @include mixins.mobile {
+    height: 100px;
+    justify-content: space-between;
+    padding: 0 5%;
+  }
+
+  &Icon {
+    width: 20px;
+    height: 20px;
+  }
+
+  &Text {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+
+    &Title {
+      color: var(--text);
+      font-size: 24px;
+
+      @include mixins.mobile {
+        width: 100%;
+      }
+    }
+  }
+}
+
+.active {
+  background-color: var(--background-color);
+}
