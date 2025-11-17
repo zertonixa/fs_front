@@ -1,10 +1,13 @@
 import { BrowserRouter } from "react-router-dom";
-import { Pages } from "../pages";
+import { QueryProvider } from "./providers/useQeryProvider";
+import { Pages } from "@/pages";
 
 export const App = () => {
   return (
-    <BrowserRouter>
-      <Pages />
-    </BrowserRouter>
+    <QueryProvider>
+      <BrowserRouter>
+        <Pages />
+      </BrowserRouter>
+    </QueryProvider>
   );
 };

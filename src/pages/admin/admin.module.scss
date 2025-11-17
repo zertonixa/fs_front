@@ -1,0 +1,23 @@
+.container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  gap: 20px;
+  flex-direction: column;
+
+  &Body {
+    display: flex;
+    gap: 20px;
+    width: 100%;
+    height: 550px;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+
+    @include mixins.mobile {
+      height: auto;
+      flex-direction: column;
+    }
+  }
+}
