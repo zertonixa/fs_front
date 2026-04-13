@@ -1,6 +1,4 @@
 import { useApiQuery } from "@/shared/lib/hooks/useApiQuery";
-import { useCallback } from "react";
-import { useSearchParams } from "react-router-dom";
 import type { Time } from "./types";
 
 export const useTimeStart = (timeStart: string) =>
@@ -8,7 +6,6 @@ export const useTimeStart = (timeStart: string) =>
     key: ["slots-start", timeStart],
     path: `/bookings/slots`,
     params: { start: timeStart },
-    staleTime: 60_000,
   });
 
 export const useTimeEnd = (timeEnd: string) =>
@@ -16,7 +13,6 @@ export const useTimeEnd = (timeEnd: string) =>
     key: ["slots-end", timeEnd],
     path: `/bookings/slots`,
     params: { end: timeEnd },
-    staleTime: 60_000,
   });
 
 export const useTimeInterval = (timeStart: string, timeEnd: string) =>
@@ -24,37 +20,53 @@ export const useTimeInterval = (timeStart: string, timeEnd: string) =>
     key: ["slots-interval", timeStart, timeEnd],
     path: `/bookings/slots`,
     params: { start: timeStart, end: timeEnd },
-    staleTime: 60_000,
   });
 
-type SetTimeArgs = {
-  startTime?: string | null;
-  endTime?: string | null;
+export const useAvailableStarts = (
+  floor: number, 
+  cso: number, 
+  type: string, 
+  fromDate: Date
+) => {
+  return useApiQuery<string[]>({
+    key: ["available-starts", floor, cso, type, fromDate.toISOString().split('T')[0]],
+    path: "/bookings/available-starts",
+    params: {
+      floor,
+      cso,
+      type,
+      from: fromDate.toISOString(),
+      to: new Date(fromDate.getTime() + 24 * 60 * 60 * 1000).toISOString()
+    },
+  });
 };
 
-export const useSetTime = () => {
-  const [_, setSearchParams] = useSearchParams();
+export const useAvailableEnds = (
+  floor: number,
+  cso: number,
+  type: string,
+  startDate: string,
+  endLimitDate?: string
+) => {
+  const getStartOfNextDay = (date: string): Date => {
+    const nextDay = new Date(date);
+    nextDay.setDate(nextDay.getDate() + 1);
+    nextDay.setHours(0, 0, 0, 0);
+    return nextDay;
+  };
 
-  const setTime = useCallback(
-    ({ startTime, endTime }: SetTimeArgs) => {
-      setSearchParams((prev) => {
-        const sp = new URLSearchParams(prev);
-
-        if (startTime !== undefined) {
-          if (startTime === null || startTime === "") sp.delete("startTime");
-          else sp.set("startTime", startTime);
-        }
-
-        if (endTime !== undefined) {
-          if (endTime === null || endTime === "") sp.delete("endTime");
-          else sp.set("endTime", endTime);
-        }
-
-        return sp;
-      });
+  return useApiQuery<string[]>({
+    key: ["available-ends", floor, cso, type, startDate, endLimitDate?.split('T')[0]],
+    path: "/bookings/available-ends",
+    params: {
+      floor,
+      cso,
+      type,
+      start: startDate,
+      end: endLimitDate 
+        ? getStartOfNextDay(endLimitDate)
+        : undefined
     },
-    [setSearchParams],
-  );
-
-  return { setTime };
+    enabled: !!startDate
+  });
 };

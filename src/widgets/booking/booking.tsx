@@ -1,55 +1,13 @@
 import styles from "./booking.module.scss";
-import { useUserBookings } from "@entities/booking/hooks/hooks";
 import { BookingCard } from "@entities/booking/ui/bookingCard";
 import type { Booking as BookingType } from "@entities/booking/hooks/types";
 import { useState } from "react";
-import { CancelBooking } from "@features/cancelBooking/cancelBooking";
-
-export const mocks: BookingType[] = [
-  {
-    id: 1,
-    type: "DRYING",
-    floor: 1,
-    startsAt: "2025-11-15T10:00:00",
-    endsAt: "2025-11-15T11:00:00",
-    place: [1, 2],
-  },
-  {
-    id: 2,
-    type: "WASHING",
-    floor: 2,
-    startsAt: "2025-11-15T12:30:00",
-    endsAt: "2025-11-15T13:00:00",
-    place: [3],
-  },
-  {
-    id: 3,
-    type: "WASHING",
-    floor: 1,
-    startsAt: "2025-11-16T09:00:00",
-    endsAt: "2025-11-16T10:30:00",
-    place: [4],
-  },
-  {
-    id: 4,
-    type: "DRYING",
-    floor: 3,
-    startsAt: "2025-11-16T14:00:00",
-    endsAt: "2025-11-16T14:45:00",
-    place: [2, 5],
-  },
-  {
-    id: 5,
-    type: "WASHING",
-    floor: 2,
-    startsAt: "2025-11-17T18:00:00",
-    endsAt: "2025-11-17T19:00:00",
-    place: [1],
-  },
-];
+import { CancelBooking } from "@/features/cancelBooking/ui/cancelBooking";
+import { useUserBookings } from "@/entities/booking/hooks";
+import { LoadingSpinner } from "@/shared/ui/button/loading/loading";
 
 export const Booking = () => {
-  const [selected, setSelected] = useState<number[]>([]);
+  const [selected, setSelected] = useState<string[]>([]);
 
   const isSelected = (id: BookingType["id"]) => selected.includes(id);
 
@@ -59,21 +17,21 @@ export const Booking = () => {
     );
   };
 
-  // const booking = useUserBookings();
+  const booking = useUserBookings();
 
-  // if (booking.isLoading) return <div>загрузка...</div>
-  // if (!booking.data?.length) return <div>нет броней</div>
+  if (booking.isLoading) return <LoadingSpinner/>
 
   return (
     <div className={styles.container}>
-      Ваши брони
+      <h2>Ваши брони</h2>
       <div className={styles.containerBody}>
-        {mocks.map((el) => (
+        {booking.data && booking.data.map((el) => (
           <BookingCard
+            key={el.id}
             floor={el.floor}
-            place={el.place}
-            startsAt={el.startsAt}
-            endsAt={el.endsAt}
+            place={el.slot_places}
+            startsAt={el.starts_at}
+            endsAt={el.ends_at}
             type={el.type}
             id={el.id}
             isActive={isSelected(el.id)}
@@ -81,8 +39,9 @@ export const Booking = () => {
           />
         ))}
       </div>
+      {!booking.data || booking.data.length === 0 && (<div className={styles.text}>Броней нет</div>)}
       <div className={styles.containerCancel}>
-        <CancelBooking />
+        <CancelBooking bookingIds={selected}/>
       </div>
     </div>
   );

@@ -1,3 +1,3 @@
 export interface AdminBarProps {
-  onClick: (str: string) => void;
+  onClick: (str: "Users" | "Slots" | "History") => void;
 }

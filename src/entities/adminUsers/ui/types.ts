@@ -1,8 +1,11 @@
 export interface UserCardProps {
   username: string;
-  id: number;
-  bookingCount: number;
+  id: string;
   status: boolean;
   onBan: () => void;
   onUnBan: () => void;
+  is_admin: boolean;
+  canChangeAdmin: boolean;
+  isAdminLoading?: boolean;
+  onToggleAdmin?: () => void;
 }

@@ -2,12 +2,12 @@ import { Options } from "../../entities/options";
 import { useSelectCso } from "./hooks";
 
 export const SelectCso = () => {
-  const { currentCso, availableCso, changeCso } = useSelectCso();
+  const { cso, availableCso, changeCso } = useSelectCso();
 
   return (
     <Options
       values={availableCso}
-      selected={currentCso}
+      selected={cso}
       onValueChanged={changeCso}
     />
   );

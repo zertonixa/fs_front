@@ -1,21 +1,30 @@
 import styles from "./calendar.module.scss";
 import arrow from "@shared/assets/calendar_arrow.webp";
 import { days } from "./libs";
-import React, { useMemo, useState } from "react";
-import { useSearchParams } from "react-router-dom";
+import React, { useMemo, useState, useCallback } from "react";
 import { buildMonthDays } from "../hooks/utils";
-import { addMonths, subMonths, format, startOfMonth } from "date-fns";
+import { 
+  addMonths, 
+  subMonths, 
+  format, 
+  startOfMonth, 
+  differenceInDays,
+  startOfDay,
+  format as formatDate
+} from "date-fns";
 import { ru } from "date-fns/locale";
-import { useBookingRange } from "../hooks/hooks";
+import { useBookingStore } from "@/shared/store/booking/booking";
 
 export const Calendar = React.memo(() => {
   const [month, setMonth] = useState(() => new Date());
-  const { handleDayClick, isSelected } = useBookingRange();
 
-  const [searchParams] = useSearchParams();
-  const type = searchParams.get("type");
+  const bookingType = useBookingStore((state) => state.bookingType);
+  const selectedStartDay = useBookingStore((state) => state.selectedStartDay);
+  const selectedEndDay = useBookingStore((state) => state.selectedEndDay);
+  const setSelectedStartDay = useBookingStore((state) => state.setSelectedStartDay);
+  const setSelectedEndDay = useBookingStore((state) => state.setSelectedEndDay);
 
-  const maxRange = type === "WASHING" ? 1 : type === "DRYING" ? 3 : null;
+  const maxRange = bookingType === "WASHING" ? 1 : 3;
 
   const minMonth = startOfMonth(new Date());
   const maxMonth = addMonths(minMonth, 3);
@@ -32,6 +41,43 @@ export const Calendar = React.memo(() => {
     if (next <= maxMonth) setMonth(next);
   };
 
+  const getDateString = useCallback((date: Date): string => {
+    return formatDate(startOfDay(date), 'yyyy-MM-dd');
+  }, []);
+
+  const isSelected = useCallback((date: Date): boolean => {
+    if (!selectedStartDay) return false;
+    
+    const dateStr = getDateString(date);
+    return dateStr === selectedStartDay || dateStr === selectedEndDay;
+  }, [selectedStartDay, selectedEndDay, getDateString]);
+
+  const handleDayClick = useCallback((date: Date) => {
+    const dateStr = getDateString(date);
+    
+    if (!selectedStartDay) {
+      setSelectedStartDay(dateStr);
+    } 
+    else if (!selectedEndDay) {
+      const start = new Date(selectedStartDay);
+      const clicked = new Date(dateStr);
+      
+      const diffDays = Math.abs(differenceInDays(clicked, start)) + 1;
+      
+      if (diffDays > maxRange) {
+        setSelectedStartDay(dateStr);
+        setSelectedEndDay('');
+      } else {
+        setSelectedEndDay(dateStr);
+      }
+    }
+
+    else {
+      setSelectedStartDay(dateStr);
+      setSelectedEndDay('');
+    }
+  }, [selectedStartDay, selectedEndDay, maxRange, setSelectedStartDay, setSelectedEndDay, getDateString]);
+
   return (
     <div className={styles.container}>
       <div className={styles.containerTitle}>
@@ -40,6 +86,7 @@ export const Calendar = React.memo(() => {
           style={{ transform: "rotate(180deg)" }}
           className={styles.containerTitleArrow}
           onClick={handlePrev}
+          alt="Предыдущий месяц"
         />
         <span className={styles.containerTitleText}>
           {format(month, "LLLL yyyy", { locale: ru })}
@@ -48,6 +95,7 @@ export const Calendar = React.memo(() => {
           src={arrow}
           className={styles.containerTitleArrow}
           onClick={handleNext}
+          alt="Следующий месяц"
         />
       </div>
 
@@ -63,12 +111,12 @@ export const Calendar = React.memo(() => {
         <div className={styles.containerBodyValues}>
           {dates.map((el) => (
             <button
-              key={el.date.toISOString()}
+              key={getDateString(el.date)}
               className={`${styles.containerBodyValuesButton} ${
                 isSelected(el.date) ? styles.selected : ""
               }`}
               type="button"
-              onClick={() => handleDayClick(el.date, maxRange)}
+              onClick={() => handleDayClick(el.date)}
               disabled={el.isEnded}
             >
               {el.date.getDate()}

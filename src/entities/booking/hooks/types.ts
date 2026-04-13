@@ -1,8 +1,8 @@
 export interface Booking {
   type: "WASHING" | "DRYING";
   floor: number;
-  startsAt: string;
-  endsAt: string;
-  place: number[];
-  id: number;
+  starts_at: string;
+  ends_at: string;
+  slot_places: number[];
+  id: string;
 }

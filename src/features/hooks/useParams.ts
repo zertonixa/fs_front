@@ -6,12 +6,18 @@ type Params = {
   endTime?: string | null;
   places: string[];
   floor?: string | null;
+  bookingType: "WASHING" | "DRYING";
 };
 
 const parseBookingParams = (sp: URLSearchParams): Params => {
   const startTime = sp.get("startTime");
   const endTime = sp.get("endTime");
   const floor = sp.get("floor");
+  const booking = sp.get("type");
+
+  const bookingType = (booking === "WASHING" || booking === "DRYING") 
+    ? booking 
+    : "WASHING";
 
   const rawPlaces = sp.get("places");
   const places = rawPlaces ? rawPlaces.split(",").filter(Boolean) : [];
@@ -21,6 +27,7 @@ const parseBookingParams = (sp: URLSearchParams): Params => {
     endTime,
     floor,
     places,
+    bookingType,
   };
 };
 
@@ -71,6 +78,14 @@ export function useBookingParams() {
     [updateBookingParams],
   );
 
+  const clearTime = useCallback(() => {
+    updateBookingParams((prev) => ({
+      ...prev,
+      startTime: undefined,
+      endTime: undefined,
+    }));
+  }, [updateBookingParams]);
+
   const togglePlace = useCallback(
     (places: string[]) => {
       updateBookingParams((prev) => {
@@ -97,8 +112,17 @@ export function useBookingParams() {
 
   return {
     params: current,
+    startTime: current.startTime,
+    endTime: current.endTime,
+    places: current.places,
+    floor: current.floor,
+    bookingType: current.bookingType,
     setTime,
+    clearTime,
     togglePlace,
     setFloor,
+    hasTimeRange: !!current.startTime && !!current.endTime,
+    hasPlaces: current.places.length > 0,
+    isComplete: !!current.startTime && !!current.endTime && current.places.length > 0,
   };
 }

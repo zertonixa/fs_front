@@ -11,4 +11,8 @@ export const widgets = [
     name: "История",
     value: "History",
   },
+  {
+    name: "Сообщения",
+    value: "Reports",
+  }
 ];

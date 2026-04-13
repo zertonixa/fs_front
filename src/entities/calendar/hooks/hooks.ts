@@ -1,120 +1,68 @@
-import { useSearchParams } from "react-router-dom";
-import { parseISO, format, addDays, differenceInCalendarDays } from "date-fns";
-import { useCallback, useMemo } from "react";
+import { differenceInCalendarDays } from "date-fns";
+import { useCallback } from "react";
+import { useBookingStore } from "@/shared/store/booking/booking";
 
-const isSameDay = (a: Date | null, b: Date) =>
-  !!a && a.getTime() === b.getTime();
+export const useBookingRange = () => {
+  const {
+    bookingType,
+    selectedStartDay,
+    selectedEndDay,
+    setSelectedStartDay,
+    setSelectedEndDay,
+  } = useBookingStore();
 
-export function useBookingRange() {
-  const [searchParams, setSearchParams] = useSearchParams();
+  const maxRange = bookingType === "WASHING" ? 1 : 3;
 
-  const startDate = useMemo(() => {
-    const p = searchParams.get("start");
-    return p ? parseISO(p) : null;
-  }, [searchParams]);
+  // Проверяем, выбран ли день
+  const isSelected = useCallback((date: Date): boolean => {
+    if (!selectedStartDay) return false;
+    
+    const dateStr = date.toISOString().split('T')[0];
+    
+    // Если выбран только начальный день
+    if (!selectedEndDay) {
+      return dateStr === selectedStartDay;
+    }
+    
+    // Если выбран диапазон
+    return dateStr === selectedStartDay || dateStr === selectedEndDay;
+  }, [selectedStartDay, selectedEndDay]);
 
-  const endDate = useMemo(() => {
-    const p = searchParams.get("end");
-    return p ? parseISO(p) : null;
-  }, [searchParams]);
-
-  const setRange = useCallback(
-    (start: Date | null, end: Date | null) => {
-      setSearchParams((prev) => {
-        const sp = new URLSearchParams(prev);
-
-        if (start) sp.set("start", format(start, "yyyy-MM-dd"));
-        else sp.delete("start");
-
-        if (end) sp.set("end", format(end, "yyyy-MM-dd"));
-        else sp.delete("end");
-
-        return sp;
-      });
-    },
-    [setSearchParams],
-  );
-
-  const handleDayClick = useCallback(
-    (day: Date, maxRange: number | null) => {
-      if (isSameDay(startDate, day) && !endDate) {
-        setRange(null, null);
-        return;
+  // Обработка клика по дню
+  const handleDayClick = useCallback((date: Date) => {
+    const dateStr = date.toISOString().split('T')[0];
+    
+    // Если не выбран начальный день, устанавливаем его
+    if (!selectedStartDay) {
+      setSelectedStartDay(dateStr);
+    } 
+    // Если начальный день выбран, но конечный нет
+    else if (!selectedEndDay) {
+      const start = new Date(selectedStartDay);
+      const clicked = new Date(dateStr);
+      
+      // Проверяем диапазон
+      const diffDays = Math.abs(differenceInCalendarDays(clicked, start)) + 1;
+      
+      if (diffDays > maxRange) {
+        // Если превышает диапазон, сбрасываем выбор и начинаем заново
+        setSelectedStartDay(dateStr);
+        setSelectedEndDay('');
+      } else {
+        // Устанавливаем конечный день
+        setSelectedEndDay(dateStr);
       }
+    }
+    // Если оба дня выбраны, сбрасываем и выбираем новый начальный
+    else {
+      setSelectedStartDay(dateStr);
+      setSelectedEndDay('');
+    }
+  }, [selectedStartDay, selectedEndDay, maxRange, setSelectedStartDay, setSelectedEndDay]);
 
-      if (isSameDay(startDate, day) || isSameDay(endDate, day)) {
-        setRange(null, null);
-        return;
-      }
-
-      if (!startDate && !endDate) {
-        setRange(day, null);
-        return;
-      }
-
-      if (startDate && !endDate) {
-        if (!maxRange) {
-          if (day < startDate) {
-            setRange(day, startDate);
-          } else {
-            setRange(startDate, day);
-          }
-          return;
-        }
-
-        const diff = Math.abs(differenceInCalendarDays(day, startDate));
-
-        if (diff <= maxRange) {
-          if (day < startDate) {
-            setRange(day, startDate);
-          } else {
-            setRange(startDate, day);
-          }
-          return;
-        }
-
-        if (day > startDate) {
-          const newEnd = day;
-          const newStart = addDays(newEnd, -maxRange);
-          setRange(newStart, newEnd);
-        } else {
-          const newStart = day;
-          const newEnd = addDays(newStart, maxRange);
-          setRange(newStart, newEnd);
-        }
-        return;
-      }
-
-      if (startDate && endDate) {
-        if (!maxRange) {
-          setRange(day, null);
-          return;
-        }
-
-        if (day > endDate) {
-          const newEnd = day;
-          const newStart = addDays(newEnd, -maxRange);
-          setRange(newStart, newEnd);
-          return;
-        }
-
-        if (day < startDate) {
-          const newStart = day;
-          const newEnd = addDays(newStart, maxRange);
-          setRange(newStart, newEnd);
-          return;
-        }
-
-        setRange(day, null);
-      }
-    },
-    [startDate, endDate, setRange],
-  );
-
-  const isSelected = useCallback(
-    (date: Date) => isSameDay(startDate, date) || isSameDay(endDate, date),
-    [startDate, endDate],
-  );
-
-  return { startDate, endDate, setRange, handleDayClick, isSelected };
-}
+  return {
+    handleDayClick,
+    isSelected,
+    maxRange,
+  };
+};

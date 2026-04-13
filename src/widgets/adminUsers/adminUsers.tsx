@@ -1,52 +1,183 @@
+import { useEffect, useMemo, useRef, useState } from "react";
 import { UserCard } from "@/entities/adminUsers/ui";
 import styles from "./adminUsers.module.scss";
-import type { UserCardProps } from "@/entities/adminUsers/ui/types";
 import { useBanUser } from "@/features/userBan/hooks/hooks";
+import { useUsers } from "@/entities/adminUsers/hooks";
+import { useApiQuery } from "@/shared/lib/hooks/useApiQuery";
+import { useAdmin } from "@/features/admin/api";
+import { CustomSelect } from "@/shared/ui/select/select";
+import type { SortBy, SortOrder } from "@/entities/adminUsers/models";
+import { LoadingSpinner } from "@/shared/ui/button/loading/loading";
 
-const mockUsers: Omit<UserCardProps, "onBan" | "onUnBan">[] = [
-  { username: "alex_dev", id: 1, bookingCount: 3, status: true },
-  { username: "maria_laundry", id: 2, bookingCount: 1, status: true },
-  { username: "oleg_admin", id: 3, bookingCount: 0, status: false },
-  { username: "vlad_k", id: 4, bookingCount: 5, status: true },
-  { username: "anna142", id: 5, bookingCount: 2, status: true },
-  { username: "sergey_qwerty", id: 6, bookingCount: 0, status: false },
-  { username: "rustam", id: 7, bookingCount: 4, status: true },
-  { username: "daria_fox", id: 8, bookingCount: 1, status: true },
-  { username: "ironman", id: 9, bookingCount: 7, status: true },
-  { username: "maks_bro", id: 10, bookingCount: 0, status: false },
-  { username: "dimon_77", id: 11, bookingCount: 6, status: true },
-  { username: "user2003", id: 12, bookingCount: 1, status: true },
-  { username: "kira", id: 13, bookingCount: 3, status: true },
-  { username: "robot_420", id: 14, bookingCount: 2, status: false },
-  { username: "admin_test", id: 15, bookingCount: 10, status: true },
-  { username: "yehor", id: 16, bookingCount: 0, status: true },
-  { username: "victoria", id: 17, bookingCount: 2, status: true },
-  { username: "ilya", id: 18, bookingCount: 5, status: false },
-  { username: "coderX", id: 19, bookingCount: 1, status: true },
-  { username: "alisa_24", id: 20, bookingCount: 4, status: true },
+type BooleanFilter = "all" | "true" | "false";
+
+const bannedOptions: { value: BooleanFilter; label: string }[] = [
+  { value: "all", label: "Все" },
+  { value: "true", label: "Забаненные" },
+  { value: "false", label: "Незабаненные" },
+];
+
+const adminOptions: { value: BooleanFilter; label: string }[] = [
+  { value: "all", label: "Любая роль" },
+  { value: "true", label: "Админ" },
+  { value: "false", label: "Пользователь" },
+];
+
+const sortByOptions: { value: SortBy; label: string }[] = [
+  { value: "created_at", label: "По дате создания" },
+  { value: "updated_at", label: "По дате обновления" },
+];
+
+const sortOrderOptions: { value: SortOrder; label: string }[] = [
+  { value: "desc", label: "Сначала новые" },
+  { value: "asc", label: "Сначала старые" },
 ];
 
 export const AdminUsers = () => {
   const { ban, unban } = useBanUser();
+  const { toggleAdmin } = useAdmin();
+
+  const [search, setSearch] = useState("");
+  const [isBanned, setIsBanned] = useState<BooleanFilter>("all");
+  const [isAdmin, setIsAdmin] = useState<BooleanFilter>("all");
+  const [sortBy, setSortBy] = useState<SortBy>("created_at");
+  const [sortOrder, setSortOrder] = useState<SortOrder>("desc");
+
+  const usersQuery = useUsers({
+    name: search || undefined,
+    isBanned: isBanned === "all" ? undefined : isBanned === "true",
+    isAdmin: isAdmin === "all" ? undefined : isAdmin === "true",
+    sortBy,
+    sortOrder,
+  });
+
+  const admin = useApiQuery<{
+    username: string;
+    telegram_id: number;
+    id: string;
+    is_admin: boolean;
+    is_root_admin: boolean;
+  }>({
+    key: ["me"],
+    path: "auth/me",
+  });
+
+  const listRef = useRef<HTMLDivElement | null>(null);
+  const loadMoreRef = useRef<HTMLDivElement | null>(null);
+
+  const users = useMemo(() => {
+    return usersQuery.data?.pages.flatMap((page) => page.items) ?? [];
+  }, [usersQuery.data]);
+
+  useEffect(() => {
+    const root = listRef.current;
+    const target = loadMoreRef.current;
+
+    if (!root || !target) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const first = entries[0];
+
+        if (
+          first?.isIntersecting &&
+          usersQuery.hasNextPage &&
+          !usersQuery.isFetchingNextPage
+        ) {
+          usersQuery.fetchNextPage();
+        }
+      },
+      {
+        root,
+        rootMargin: "120px",
+        threshold: 0.1,
+      }
+    );
+
+    observer.observe(target);
+
+    return () => observer.disconnect();
+  }, [
+    usersQuery.hasNextPage,
+    usersQuery.isFetchingNextPage,
+    usersQuery.fetchNextPage,
+    users.length,
+  ]);
 
   return (
     <div className={styles.container}>
       <span className={styles.containerTitle}>Пользователи</span>
-      <input
-        className={styles.containerInput}
-        placeholder="Поиск пользователя"
-      ></input>
-      <div className={styles.containerCards}>
-        {mockUsers.map((el) => (
+
+      <div className={styles.containerFilters}>
+        <input
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className={styles.containerInput}
+          placeholder="Поиск пользователя"
+        />
+
+        <CustomSelect
+          value={isBanned}
+          options={bannedOptions}
+          onChange={setIsBanned}
+        />
+
+        <CustomSelect
+          value={isAdmin}
+          options={adminOptions}
+          onChange={setIsAdmin}
+        />
+
+        <CustomSelect
+          value={sortBy}
+          options={sortByOptions}
+          onChange={setSortBy}
+        />
+
+        <CustomSelect
+          value={sortOrder}
+          options={sortOrderOptions}
+          onChange={setSortOrder}
+        />
+      </div>
+
+      <div ref={listRef} className={styles.containerCards}>
+        {usersQuery.isPending && <LoadingSpinner />}
+
+        {usersQuery.isError && (
+          <span className={styles.containerState}>Ошибка загрузки пользователей</span>
+        )}
+
+        {!usersQuery.isPending && !usersQuery.isError && users.length === 0 && (
+          <span className={styles.containerState}>Пользователи не найдены</span>
+        )}
+
+        {users.map((el) => (
           <UserCard
+            key={el.id}
             id={el.id}
             username={el.username}
-            bookingCount={el.bookingCount}
-            status={el.status}
+            status={el.is_banned}
+            is_admin={el.is_admin}
+            canChangeAdmin={admin.data?.is_root_admin || false}
+            isAdminLoading={toggleAdmin.isPending}
+            onToggleAdmin={() => toggleAdmin.mutate({ id: el.id })}
             onBan={() => ban.mutate({ id: el.id })}
             onUnBan={() => unban.mutate({ id: el.id })}
           />
         ))}
+
+        <div ref={loadMoreRef} className={styles.containerLoadMoreTrigger} />
+
+        {usersQuery.isFetchingNextPage && (
+          <div className={styles.containerBottomLoader}>
+            <LoadingSpinner />
+          </div>
+        )}
+
+        {!usersQuery.hasNextPage && users.length > 0 && (
+          <span className={styles.containerState}>Все пользователи загружены</span>
+        )}
       </div>
     </div>
   );

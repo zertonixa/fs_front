@@ -32,6 +32,55 @@
       @include mixins.mobile {
         width: 100%;
       }
+
+      &Buttons {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 30px;
+        width: 100%;
+        height: 120px;
+        border-radius: 10px;
+        box-shadow: colors.$box-shadow;
+
+        background-color: var(--cards-color);
+
+        @include mixins.mobile {
+          width: 100%;
+          gap: 10px;
+        }
+
+        &History {
+          font-size: 18px;
+          font-weight: 600;
+          border-radius: 10px;
+          border: 1px solid var(--border);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          flex-direction: column;
+          gap: 10px;
+          cursor: pointer;
+          transition: 0.2s ease;
+          width: 100px;
+          height: 100px;
+
+          @include mixins.mobile {
+            width: 95px;
+            height: 95px;
+            font-size: 16px;
+          }
+
+          &:hover {
+            background-color: var(--background-color);
+          }
+
+          &Image {
+            width: 35px;
+            height: 35px;
+          }
+        }
+      }
     }
   }
 }

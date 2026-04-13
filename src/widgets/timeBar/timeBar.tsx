@@ -1,114 +1,99 @@
 import { TimeBar } from "@/entities/timeBar/ui";
 import styles from "./timeBar.module.scss";
-import type { TimeBarProps } from "@/entities/timeBar/ui/types";
-import { useBookingParams } from "@/features/hooks/useParams";
-import React, { useState } from "react";
-
-export const timeBarMocks: TimeBarProps[] = [
-  {
-    date: "2025-11-16T09:00:00",
-    values: [
-      "2025-11-16T13:30:00",
-      "2025-11-16T14:00:00",
-      "2025-11-16T14:30:00",
-      "2025-11-16T15:00:00",
-      "2025-11-16T16:00:00",
-      "2025-11-16T16:30:00",
-      "2025-11-16T17:00:00",
-      "2025-11-16T21:00:00",
-      "2025-11-16T21:10:00",
-      "2025-11-16T21:20:00",
-      "2025-11-16T21:30:00",
-      "2025-11-16T21:40:00",
-    ],
-    onValueChanged: () => {},
-    type: "startTime",
-  },
-  {
-    date: "2025-11-16T13:30:00",
-    values: [
-      "2025-11-16T13:30:00",
-      "2025-11-16T14:00:00",
-      "2025-11-16T14:30:00",
-      "2025-11-16T15:00:00",
-      "2025-11-16T16:00:00",
-      "2025-11-16T16:30:00",
-      "2025-11-16T17:00:00",
-      "2025-11-16T21:00:00",
-      "2025-11-16T21:10:00",
-      "2025-11-16T21:20:00",
-      "2025-11-16T21:30:00",
-      "2025-11-16T21:40:00",
-    ],
-    onValueChanged: () => {},
-    type: "startTime",
-  },
-  {
-    date: "2025-11-16T16:00:00",
-    values: [
-      "2025-11-16T16:00:00",
-      "2025-11-16T16:30:00",
-      "2025-11-16T17:00:00",
-    ],
-    onValueChanged: () => {},
-    type: "endTime",
-  },
-  {
-    date: "2025-11-16T18:45:00",
-    values: [
-      "18:45:00",
-      "19:00:00",
-      "2025-11-16T19:15:00",
-      "2025-11-16T19:30:00",
-    ],
-    onValueChanged: () => {},
-    type: "endTime",
-  },
-  {
-    date: "2025-11-16T21:10:00",
-    values: [
-      "2025-11-16T21:00:00",
-      "2025-11-16T21:10:00",
-      "2025-11-16T21:20:00",
-      "2025-11-16T21:30:00",
-      "2025-11-16T21:40:00",
-    ],
-    onValueChanged: () => {},
-    type: "endTime",
-  },
-];
+import React, { useMemo } from "react";
+import { useAvailableStarts, useAvailableEnds } from "@/entities/timeBar/hooks/hooks";
+import { useBookingStore } from "@/shared/store/booking/booking";
 
 export const TimeBarWidget = React.memo(() => {
-  const [startTime, setStartTime] = useState<string | null>(null);
-  const [endTime, setEndTime] = useState<string | null>(null);
 
-  const { setTime } = useBookingParams();
+  const bookingType = useBookingStore((state) => state.bookingType);
+  const floor = useBookingStore((state) => state.floor);
+  const cso = useBookingStore((state) => state.cso);
+  const selectedStartDay = useBookingStore((state) => state.selectedStartDay);
+  const selectedEndDay = useBookingStore((state) => state.selectedEndDay);
+  const selectedStartTime = useBookingStore((state) => state.selectedStartTime);
+  const selectedEndTime = useBookingStore((state) => state.selectedEndTime);
+  
+  const setSelectedStartTime = useBookingStore((state) => state.setSelectedStartTime);
+  const setSelectedEndTime = useBookingStore((state) => state.setSelectedEndTime);
 
-  const handleClick = (date: string, param: "startTime" | "endTime") => {
-    if (param === "startTime") {
-      setStartTime(date);
-      setTime({ startTime: date });
-    } else {
-      setEndTime(date);
-      setTime({ endTime: date });
+  const baseDate = useMemo(() => {
+    if (selectedStartDay) {
+      const [year, month, day] = selectedStartDay.split('-').map(Number);
+      return new Date(year, month - 1, day);
     }
+    return new Date();
+  }, [selectedStartDay]);
+
+  const endBaseDate = useMemo(() => {
+    if (selectedStartDay) {
+      const [year, month, day] = selectedStartDay.split('-').map(Number);
+      const date = new Date(year, month - 1, day, 23, 59, 0);
+      return date;
+    }
+    setSelectedEndTime("");
+    return undefined;
+  }, [selectedStartDay]);
+
+  const endDateForSearch = useMemo(() => {
+    if (selectedEndDay) {
+      const [year, month, day] = selectedEndDay.split('-').map(Number);
+      const date = new Date(year, month - 1, day, 23, 59, 0);
+      return date;
+    }
+    setSelectedEndTime("");
+    return undefined;
+  }, [selectedEndDay]);
+
+  const startsQuery = useAvailableStarts(floor, cso, bookingType, baseDate);
+
+  const endsQuery = useAvailableEnds(
+    floor,
+    cso,
+    bookingType,
+    selectedStartTime || baseDate.toISOString(),
+    endDateForSearch?.toISOString() || endBaseDate?.toISOString()
+  );
+
+  const handleStartTimeSelect = (dateString: string) => {
+    setSelectedStartTime(dateString);
+  };
+
+  const handleEndTimeSelect = (dateString: string) => {
+    setSelectedEndTime(dateString);
+  };
+
+  const formatDateDisplay = (date: Date): string => {
+    return date.toLocaleDateString("ru-RU", {
+      day: "numeric",
+      month: "long"
+    });
   };
 
   return (
     <div className={styles.container}>
-      <span className={styles.containerTitle}>Начало: 6 октября</span>
+      <span className={styles.containerTitle}>
+        Начало: {formatDateDisplay(baseDate)}
+      </span>
       <TimeBar
         type="startTime"
-        date={startTime ? startTime : undefined}
-        values={timeBarMocks[0].values}
-        onValueChanged={handleClick}
+        date={selectedStartTime ? selectedStartTime : undefined}
+        values={startsQuery.data || []}
+        onValueChanged={handleStartTimeSelect}
       />
-      <span className={styles.containerTitle}>Конец: 7 октября</span>
+      
+      <span className={styles.containerTitle}>
+        Конец: {formatDateDisplay(
+          selectedEndTime 
+            ? new Date(selectedEndTime)
+            : new Date(baseDate.getTime() + 24 * 60 * 60 * 1000)
+        )}
+      </span>
       <TimeBar
         type="endTime"
-        date={endTime ? endTime : undefined}
-        values={timeBarMocks[1].values}
-        onValueChanged={handleClick}
+        date={selectedEndTime ? selectedEndTime : undefined}
+        values={endsQuery.data || []}
+        onValueChanged={handleEndTimeSelect}
       />
     </div>
   );

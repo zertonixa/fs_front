@@ -1,0 +1,1 @@
+export { AdminStoryCard } from "./adminStory";

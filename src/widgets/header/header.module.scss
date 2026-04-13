@@ -48,4 +48,27 @@
       }
     }
   }
+
+  &Buttons {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+
+    &Admin {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      height: 35px;
+      aspect-ratio: 1/1;
+      border-radius: 5px;
+      border: 1px solid var(--border);
+      transition: 0.3s ease;
+
+      &:hover {
+        background-color: #cdcbcb;
+      }
+    }
+  }
 }

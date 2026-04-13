@@ -20,7 +20,7 @@
   }
 
   @include mixins.mobile {
-    justify-content: space-between;
+    justify-content: flex-start;
     padding: 0 5%;
     font-size: 11px;
   }

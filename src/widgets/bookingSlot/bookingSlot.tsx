@@ -1,218 +1,193 @@
 import { BookingSlot } from "@/entities/bookingSlots/ui";
 import styles from "./bookingSlot.module.scss";
-import type { BookingSlotProps } from "@/entities/bookingSlots/ui/types";
 import { Button } from "@/shared/ui/button";
-import { useBookingParams } from "@/features/hooks/useParams";
-import React, { useEffect, useRef, useState } from "react";
-
-export const bookingSlotsMock: BookingSlotProps[] = [
-  {
-    place: 1,
-    isSelected: false,
-    isDisabled: false,
-    isEnter: true,
-    onClick: () => {},
-  },
-  {
-    place: 2,
-    isSelected: true,
-    isDisabled: false,
-    isEnter: false,
-    onClick: () => {},
-  },
-  {
-    place: 3,
-    isSelected: false,
-    isDisabled: true,
-    isEnter: false,
-    onClick: () => {},
-  },
-  {
-    place: 4,
-    isSelected: false,
-    isDisabled: false,
-    isEnter: false,
-    onClick: () => {},
-  },
-  {
-    place: 5,
-    isSelected: false,
-    isDisabled: false,
-    isEnter: false,
-    onClick: () => {},
-  },
-
-  {
-    place: 6,
-    isSelected: false,
-    isDisabled: false,
-    isEnter: false,
-    onClick: () => {},
-  },
-  {
-    place: 7,
-    isSelected: true,
-    isDisabled: false,
-    isEnter: false,
-    onClick: () => {},
-  },
-  {
-    place: 8,
-    isSelected: false,
-    isDisabled: false,
-    isEnter: false,
-    onClick: () => {},
-  },
-  {
-    place: 9,
-    isSelected: false,
-    isDisabled: true,
-    isEnter: false,
-    onClick: () => {},
-  },
-  {
-    place: 10,
-    isSelected: false,
-    isDisabled: false,
-    isEnter: false,
-    onClick: () => {},
-  },
-
-  {
-    place: 11,
-    isSelected: false,
-    isDisabled: false,
-    isEnter: false,
-    onClick: () => {},
-  },
-  {
-    place: 12,
-    isSelected: false,
-    isDisabled: false,
-    isEnter: false,
-    onClick: () => {},
-  },
-  {
-    place: 13,
-    isSelected: true,
-    isDisabled: false,
-    isEnter: false,
-    onClick: () => {},
-  },
-  {
-    place: 14,
-    isSelected: false,
-    isDisabled: false,
-    isEnter: false,
-    onClick: () => {},
-  },
-  {
-    place: 15,
-    isSelected: false,
-    isDisabled: true,
-    isEnter: false,
-    onClick: () => {},
-  },
-
-  {
-    place: 16,
-    isSelected: false,
-    isDisabled: false,
-    isEnter: false,
-    onClick: () => {},
-  },
-  {
-    place: 17,
-    isSelected: true,
-    isDisabled: false,
-    isEnter: false,
-    onClick: () => {},
-  },
-  {
-    place: 18,
-    isSelected: false,
-    isDisabled: false,
-    isEnter: false,
-    onClick: () => {},
-  },
-  {
-    place: 19,
-    isSelected: false,
-    isDisabled: false,
-    isEnter: false,
-    onClick: () => {},
-  },
-  {
-    place: 20,
-    isSelected: false,
-    isDisabled: true,
-    isEnter: false,
-    onClick: () => {},
-  },
-];
+import React, { useEffect, useRef, useState, useMemo } from "react";
+import { useSlots, useOverlaps } from "@/entities/bookingSlots/hooks/hooks";
+import { LoadingSpinner } from "@/shared/ui/button/loading/loading";
+import { CreateButton } from "@/features/createBooking/ui";
+import { useBookingStore } from "@/shared/store/booking/booking";
 
 export const BookingSlotWidget = React.memo(() => {
-  const { params, togglePlace } = useBookingParams();
+
+  const selectedStartTime = useBookingStore((state) => state.selectedStartTime)
+  const selectedEndTime = useBookingStore((state) => state.selectedEndTime)
+  const cso = useBookingStore((state) => state.cso)
+  const floor = useBookingStore((state) => state.floor)
+  const bookingType = useBookingStore((state) => state.bookingType)
 
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const [selected, setSelected] = useState<Set<string>>(
-    () => new Set(params.places),
+  const [selectedPlaces, setSelectedPlaces] = useState<Set<number>>(
+    () => new Set(),
   );
 
-  const handleToggle = (id: number) => {
-    const idStr = String(id);
-
-    setSelected((prev) => {
+  const handleToggle = (placeId: number) => {
+    
+    setSelectedPlaces((prev) => {
       const next = new Set(prev);
-      if (next.has(idStr)) next.delete(idStr);
-      else if (next.size < 6) next.add(idStr);
+      if (next.has(placeId)) {
+        next.delete(placeId);
+      } else if (next.size < 6) {
+        next.add(placeId);
+      }
       return next;
     });
+    
   };
 
-  const isSelected = (id: number) => selected.has(String(id));
+  const isSelected = (placeId: number) => selectedPlaces.has(placeId);
 
   useEffect(() => {
     if (timeoutRef.current) {
       clearTimeout(timeoutRef.current);
     }
 
-    timeoutRef.current = setTimeout(() => {
-      togglePlace(Array.from(selected));
-    }, 300);
-
     return () => {
       if (timeoutRef.current) {
         clearTimeout(timeoutRef.current);
       }
     };
-  }, [selected]);
+  }, [selectedPlaces]);
+
+  const slotsQuery = useSlots({
+    type: bookingType,
+    floor: floor,
+    cso: cso,
+  });
+
+  const overlapsDates = useMemo(() => {
+    if (!selectedStartTime || !selectedEndTime) return null;
+    
+    try {
+      const startDate = new Date(selectedStartTime);
+      const endDate = new Date(selectedEndTime);
+      
+      if (!isNaN(startDate.getTime()) && !isNaN(endDate.getTime())) {
+        return { startDate, endDate };
+      }
+    } catch (error) {
+      console.error("Error parsing dates:", error);
+    }
+    return null;
+  }, [selectedStartTime, selectedEndTime]);
+
+  const overlapsQuery = useOverlaps(
+    overlapsDates 
+      ? {
+          type: bookingType,
+          floor: floor,
+          cso: cso,
+          starts_at: overlapsDates.startDate,
+          ends_at: overlapsDates.endDate,
+          enabled: true
+        }
+      : {
+          type: bookingType,
+          floor: floor,
+          cso: cso,
+          starts_at: new Date(),
+          ends_at: new Date(Date.now() + 3600000),
+          enabled: false
+        }
+  );
+
+  const displayData = useMemo(() => {
+    if (overlapsDates && overlapsQuery.data) {
+      return overlapsQuery.data;
+    }
+    return slotsQuery.data;
+  }, [slotsQuery.data, overlapsQuery.data, overlapsDates]);
+
+  const isLoading = slotsQuery.isPending || (overlapsDates && overlapsQuery.isPending);
+  const hasError = slotsQuery.error || (overlapsDates && overlapsQuery.error);
+
+  const bookingData = useMemo(() => {
+    if (!selectedStartTime || !selectedEndTime || selectedPlaces.size === 0) return null;
+    
+    const slotIds: string[] = [];
+    displayData?.forEach(row => {
+      row.forEach(slot => {
+        if (selectedPlaces.has(slot.place)) {
+          if (slot.id) {
+            slotIds.push(slot.id);
+          }
+        }
+      });
+    });
+    
+    return {
+      type: bookingType,
+      floor: floor,
+      cso: cso,
+      starts_at: selectedStartTime,
+      ends_at: selectedEndTime,
+      slot_ids: slotIds,
+      selected_places: Array.from(selectedPlaces).map(String),
+    };
+  }, [selectedStartTime, selectedEndTime, selectedPlaces, displayData, bookingType, floor, cso]);
+
+  if (isLoading) {
+    return (
+      <div className={styles.container}>
+        <LoadingSpinner/>
+      </div>
+    );
+  }
+
+  if (hasError) {
+    return (
+      <div className={styles.container}>
+        <div style={{ textAlign: 'center', padding: '20px', color: 'var(--error)' }}>
+          Ошибка при загрузке слотов
+        </div>
+      </div>
+    );
+  }
+
+  if (!displayData || displayData.length === 0) {
+    return (
+      <div className={styles.container}>
+        <div style={{ textAlign: 'center', padding: '20px' }}>
+          Нет доступных слотов
+        </div>
+        <div className={styles.containerButton}>
+          <Button
+            text="Забронировать"
+            onClick={console.log}
+            backgroundColor="var(--attention)"
+            width="150px"
+            height="40px"
+            borderRadius="5px"
+            fontSize="16px"
+          />
+        </div>
+      </div>
+    );
+  }
+
+  const cols = displayData[0]?.length || 1;
 
   return (
-    <div className={styles.container}>
-      <div className={styles.containerGrid} style={{ ["--cols" as any]: 5 }}>
-        {bookingSlotsMock.map((place) => (
-          <BookingSlot
-            key={place.place}
-            isEnter={place.isEnter}
-            place={place.place}
-            isSelected={isSelected(place.place)}
-            isDisabled={place.isDisabled}
-            onClick={() => handleToggle(place.place)}
-          />
-        ))}
+    <div className={styles.container} >
+      <div className={styles.containerGrid} style={{ ["--cols" as any]: cols }}>
+        {displayData.map((row, rowIndex) => 
+          row.map((place) => (
+            <BookingSlot
+              key={`${rowIndex}-${place.place}`}
+              isEnter={false}
+              place={place.place}
+              isSelected={isSelected(place.place)}
+              isDisabled={!place.isAvailable}
+              onClick={() => handleToggle(place.place)}
+            />
+          ))
+        )}
       </div>
       <div className={styles.containerButton}>
-        <Button
-          text="Забронировать"
-          onClick={console.log}
-          backgroundColor="var(--attention)"
-          width="150px"
-          height="40px"
-          borderRadius="5px"
-          fontSize="16px"
-        />
+          <CreateButton
+            bookingData={bookingData}
+            disabled={selectedPlaces.size === 0 || !selectedStartTime || !selectedEndTime}
+          />
       </div>
     </div>
   );

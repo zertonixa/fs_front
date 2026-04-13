@@ -1,0 +1,131 @@
+.card {
+  height: auto;
+  min-height: 75px;
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+  border: 1px solid var(--border);
+  color: var(--sub-text);
+  font-size: 14px;
+  gap: 8px;
+  border-radius: 10px;
+  width: 100%;
+  transition: 0.2s ease;
+  flex: 0 0 auto;
+  position: relative;
+  background: var(--background-secondary);
+
+  @include mixins.mobile {
+    padding: 8px 5%;
+    font-size: 11px;
+  }
+
+  &:hover {
+    border-color: var(--primary);
+    background: var(--background-hover);
+  }
+
+  &Header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding-bottom: 4px;
+    border-bottom: 1px solid var(--border-light);
+
+    &Id {
+      font-weight: 500;
+      color: var(--text);
+    }
+
+    &Date {
+      font-size: 12px;
+      
+      @include mixins.mobile {
+        font-size: 10px;
+      }
+    }
+  }
+
+  &Content {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+
+    &Row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+
+      @include mixins.mobile {
+        gap: 4px;
+      }
+
+      &Label {
+        min-width: 80px;
+        color: var(--sub-text);
+        
+        @include mixins.mobile {
+          min-width: 70px;
+        }
+      }
+
+      &Value {
+        color: var(--text);
+        font-weight: 500;
+        word-break: break-word;
+
+        &_ban {
+          color: var(--error);
+        }
+
+        &_unban {
+          color: var(--success);
+        }
+
+        &_grant_admin {
+          color: var(--warning);
+        }
+
+        &_revoke_admin {
+          color: var(--error-light);
+        }
+
+        &_change_slot {
+          color: var(--info);
+        }
+      }
+    }
+
+    &Description {
+      margin-top: 4px;
+      padding: 8px;
+      background: var(--background-tertiary);
+      border-radius: 6px;
+
+      &Label {
+        display: block;
+        margin-bottom: 4px;
+        color: var(--sub-text);
+        font-size: 12px;
+      }
+
+      &Text {
+        color: var(--text);
+        font-size: 13px;
+        line-height: 1.4;
+        margin: 0;
+        word-break: break-word;
+
+        @include mixins.mobile {
+          font-size: 11px;
+        }
+      }
+    }
+  }
+}
+
+.active {
+  background-color: var(--background-active);
+  border-color: var(--primary);
+}

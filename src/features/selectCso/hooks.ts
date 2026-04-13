@@ -1,14 +1,15 @@
-import { useState } from "react";
+import { useBookingStore } from "@/shared/store/booking/booking";
 
 export const useSelectCso = () => {
   const data = [1, 3, 4];
-  const [currentCso, setCurrentCso] = useState<number>(4);
+  const cso = useBookingStore((state) => state.cso);
+  const setCso = useBookingStore((state) => state.setCso);
 
-  const availableCso = data.filter((el) => el !== currentCso);
+  const availableCso = data.filter((el) => el !== cso);
 
   const changeCso = (value: number) => {
-    setCurrentCso(value);
+    setCso(value);
   };
 
-  return { currentCso, availableCso, changeCso };
+  return { cso, availableCso, changeCso };
 };

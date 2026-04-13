@@ -1,1 +1,1 @@
-export { BookingPage } from "./booking";
+export { BookingPage as default } from "./booking";

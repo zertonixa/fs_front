@@ -1,4 +1,5 @@
 import React from "react";
+import { LoadingSpinner } from "./loading/loading";
 
 interface ButtonProps {
   text: string;
@@ -10,6 +11,7 @@ interface ButtonProps {
   height?: string;
   disabled?: boolean;
   border?: string;
+  loading?: boolean;
 }
 
 export const Button = React.memo(
@@ -23,6 +25,7 @@ export const Button = React.memo(
     height,
     disabled,
     border,
+    loading = false,
   }: ButtonProps) => (
     <button
       onClick={() => onClick()}
@@ -34,13 +37,13 @@ export const Button = React.memo(
         fontSize: fontSize || "16px",
         width: width || "",
         height: height || "",
-        opacity: disabled ? 0.5 : "",
+        opacity: disabled ? 0.1 : "",
         cursor: "pointer",
         border: border || "",
         color: "#fff",
       }}
     >
-      {text}
+      {!loading ? text : <LoadingSpinner/>}
     </button>
   ),
 );

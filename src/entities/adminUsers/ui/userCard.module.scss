@@ -27,6 +27,24 @@
     }
   }
 
+  &Meta {
+    margin-top: 6px;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+
+    &Label {
+      font-size: 14px;
+      font-weight: 600;
+      opacity: 0.8;
+    }
+
+    &Value {
+      font-size: 14px;
+      font-weight: 600;
+    }
+  }
+
   &Button {
     border-radius: 5px;
     width: 150px;
@@ -36,12 +54,55 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: 0.2s ease;
+    transition: 0.3s ease;
     border: 1px solid var(--border);
     cursor: pointer;
 
     &:hover {
       background-color: #d2d0d0;
     }
+
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
   }
+}
+
+.toggle {
+  width: 46px;
+  height: 26px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: #e6e6e6;
+  position: relative;
+  padding: 0;
+  cursor: pointer;
+  transition: 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  &[aria-pressed="true"] {
+    background: #cfcfcf;
+  }
+}
+
+.toggleThumb {
+  width: 20px;
+  height: 20px;
+  border-radius: 999px;
+  background: #ffffff;
+  border: 1px solid var(--border);
+  position: absolute;
+  left: 3px;
+  transition: 0.2s ease;
+}
+
+.toggleThumbOn {
+  left: 23px;
 }

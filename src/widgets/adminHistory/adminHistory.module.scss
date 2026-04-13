@@ -1,0 +1,24 @@
+.container {
+  width: 80%;
+  height: 100%;
+  box-shadow: colors.$box-shadow;
+  border-radius: 10px;
+  display: flex;
+  overflow-y: scroll;
+  align-items: start;
+  gap: 20px;
+  justify-content: start;
+  padding: 30px 40px;
+  flex-direction: column;
+  background-color: var(--cards-color);
+
+  &Cards {
+    width: 100%;
+    overflow-y: scroll;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    flex-direction: column;
+    justify-content: start;
+  }
+}
