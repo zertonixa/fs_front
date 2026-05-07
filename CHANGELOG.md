@@ -1,3 +1,10 @@
+## [1.0.4](https://github.com/Zertonixa/fs_front/compare/v1.0.3...v1.0.4) (2026-05-07)
+
+
+### Bug Fixes
+
+* **lint:** format ([9f136b2](https://github.com/Zertonixa/fs_front/commit/9f136b2f0f6b8412ad1b27e8b4b33720525787a3))
+
 ## [1.0.3](https://github.com/Zertonixa/fs_front/compare/v1.0.2...v1.0.3) (2026-05-07)
 
 
