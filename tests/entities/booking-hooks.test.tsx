@@ -32,13 +32,11 @@ vi.mock("@shared/lib/hooks/useApiMutation", () => ({
 describe("booking hooks", () => {
   beforeEach(() => {
     spies.useApiQuery.mockReset().mockReturnValue({ data: [] });
-    spies.useApiMutation
-      .mockReset()
-      .mockImplementation((path, method) => ({
-        path,
-        method,
-        mutate: vi.fn(),
-      }));
+    spies.useApiMutation.mockReset().mockImplementation((path, method) => ({
+      path,
+      method,
+      mutate: vi.fn(),
+    }));
   });
 
   it("useUserBookings запрашивает брони текущего пользователя", () => {
