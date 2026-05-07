@@ -1,6 +1,6 @@
 import axios, { AxiosError, type InternalAxiosRequestConfig } from "axios";
 
-const url = "http://localhost:8000/api/v1/";
+const url = "/api/v1/";
 
 type RetryableRequestConfig = InternalAxiosRequestConfig & {
   _retry?: boolean;
