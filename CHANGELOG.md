@@ -1,3 +1,10 @@
+## [1.0.5](https://github.com/Zertonixa/fs_front/compare/v1.0.4...v1.0.5) (2026-05-07)
+
+
+### Bug Fixes
+
+* **api:** base url ([b107965](https://github.com/Zertonixa/fs_front/commit/b10796549bb51d765500ecb1a5f12797eb9ba1b9))
+
 ## [1.0.4](https://github.com/Zertonixa/fs_front/compare/v1.0.3...v1.0.4) (2026-05-07)
 
 
