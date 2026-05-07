@@ -1,10 +1,16 @@
 import { BrowserRouter } from "react-router-dom";
-import { Pages } from "../pages";
+import { QueryProvider } from "./providers/useQeryProvider";
+import { HelmetProvider } from 'react-helmet-async';
+import { Pages } from "@/pages";
 
 export const App = () => {
   return (
-    <BrowserRouter>
-      <Pages />
-    </BrowserRouter>
+    <QueryProvider>
+      <HelmetProvider>
+        <BrowserRouter>
+          <Pages />
+        </BrowserRouter>
+      </HelmetProvider>
+    </QueryProvider>
   );
 };

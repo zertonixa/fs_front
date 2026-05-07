@@ -1,0 +1,69 @@
+.container {
+  border-radius: 10px;
+  width: 180px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border: 1px solid var(--border);
+  position: relative;
+  cursor: pointer;
+
+  @include mixins.mobile {
+    width: 120px;
+    height: 40px;
+  }
+
+  &Card {
+    width: 100%;
+    padding: 0 5%;
+    color: var(--sub-text);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 16px;
+
+    @include mixins.mobile {
+      font-size: 11px;
+    }
+
+    &Arrow {
+      width: 15px;
+      height: 10px;
+
+      @include mixins.mobile {
+        width: 12px;
+        height: 8px;
+      }
+    }
+  }
+
+  &Values {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    position: absolute;
+    color: var(--sub-text);
+    top: 100%;
+    left: 0%;
+    overflow: hidden;
+
+    &Card {
+      width: 100%;
+      height: 50px;
+      background-color: var(--cards-color);
+      display: flex;
+      z-index: 5;
+      align-items: center;
+      justify-content: center;
+      padding: 0 5%;
+      border-bottom: 1px solid var(--border);
+
+      @include mixins.mobile {
+        font-size: 12px;
+      }
+    }
+  }
+}

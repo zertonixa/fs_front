@@ -1,0 +1,216 @@
+.containerBody {
+    &Header {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 12px;
+    }
+
+    &Back {
+        border: none;
+        background: transparent;
+        color: var(--text);
+        font-size: 24px;
+        line-height: 1;
+        cursor: pointer;
+        padding: 0;
+        width: 32px;
+        height: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        &:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+    }
+
+    &Title {
+        font-size: 24px;
+        font-weight: 600;
+        color: var(--text);
+    }
+
+    &Close {
+        border: none;
+        background: transparent;
+        color: var(--text);
+        font-size: 28px;
+        line-height: 1;
+        cursor: pointer;
+        padding: 0;
+        width: 32px;
+        height: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        &:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+    }
+
+    &Form {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        height: 100%;
+    }
+
+    &Label {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+
+        &Text {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text);
+        }
+    }
+
+    &Input {
+        width: 100%;
+        min-height: 44px;
+        border-radius: 10px;
+        border: 1px solid var(--stroke, #d9d9d9);
+        background-color: transparent;
+        color: var(--text);
+        padding: 12px 14px;
+        font-size: 14px;
+        outline: none;
+
+        &::placeholder {
+            color: #7a76bd;
+        }
+
+        &:focus {
+            border-color: var(--attention, #999);
+        }
+    }
+
+    &Upload {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    &Dropzone {
+        min-height: 120px;
+        border-radius: 10px;
+        border: 1px dashed var(--border);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        padding: 16px;
+        text-align: center;
+        cursor: pointer;
+        transition:
+            border-color 0.2s ease,
+            opacity 0.2s ease,
+            transform 0.2s ease;
+
+        &Active {
+            border-color: var(--attention);
+        }
+
+        &Disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        &Title {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--attention);
+        }
+    }
+
+    &Hint {
+        font-size: 12px;
+        color: var(--text-secondary, #8c8c8c);
+    }
+
+    &Files {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        max-height: 180px;
+        overflow-y: auto;
+    }
+
+    &File {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 10px 12px;
+        border-radius: 10px;
+        background-color: var(--background, rgb(0 0 0 / 3%));
+        border: 1px solid var(--border);
+
+        &Info {
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+            gap: 4px;
+        }
+
+        &Name {
+            color: var(--text);
+            font-size: 14px;
+            word-break: break-word;
+        }
+
+        &Size {
+            color: var(--text-secondary, #8c8c8c);
+            font-size: 12px;
+        }
+
+        &Remove {
+            border: none;
+            background: transparent;
+            color: #d9534f;
+            cursor: pointer;
+            font-size: 13px;
+            flex-shrink: 0;
+
+            &:disabled {
+                opacity: 0.5;
+                cursor: not-allowed;
+            }
+        }
+    }
+
+    &Bottom {
+        margin-top: auto;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    &Error {
+        color: #d9534f;
+        font-size: 13px;
+    }
+
+    &Submit {
+        min-height: 46px;
+        border: none;
+        border-radius: 10px;
+        background-color: var(--attention);
+        color: var(--white, #fff);
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+
+        &:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+    }
+}

@@ -1,0 +1,61 @@
+.container {
+  height: 75px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border: 1px solid var(--border);
+  color: var(--sub-text);
+  font-size: 18px;
+  gap: 20px;
+  border-radius: 15px;
+  cursor: pointer;
+  width: 100%;
+  min-width: 275px;
+  padding: 0 10px;
+
+  @include mixins.mobile {
+    font-size: 13px;
+  }
+
+  &Text {
+    display: flex;
+    align-items: start;
+    justify-content: start;
+    text-align: left;
+    flex-direction: column;
+
+    &Title {
+      color: var(--text);
+      font-size: 20px;
+
+      @include mixins.mobile {
+        width: 100%;
+        font-size: 14px;
+      }
+    }
+  }
+
+  &Button {
+    width: 30px;
+    height: 30px;
+    border-radius: 5px;
+    background-color: var(--attention);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+
+    @include mixins.mobile {
+      width: 40px;
+    }
+
+    &:hover {
+      opacity: 0.8;
+    }
+
+    &Image {
+      width: 12px;
+      height: 7.5px;
+    }
+  }
+}

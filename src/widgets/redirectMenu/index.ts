@@ -1,0 +1,1 @@
+export { RedirectMenu } from "./redirectMenu";

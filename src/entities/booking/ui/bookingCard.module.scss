@@ -1,0 +1,68 @@
+.container {
+  height: 75px;
+  display: flex;
+  align-items: center;
+  justify-content: start;
+  padding: 0 10px;
+  border: 1px solid var(--border);
+  color: var(--sub-text);
+  font-size: 14px;
+  gap: 20px;
+  border-radius: 10px;
+  cursor: pointer;
+  width: 100%;
+  transition: 0.2s ease;
+  flex: 0 0 auto;
+  position: relative;
+
+  &:hover {
+    background-color: var(--background-color);
+  }
+
+  @include mixins.mobile {
+    justify-content: flex-start;
+    padding: 0 5%;
+    font-size: 11px;
+  }
+
+  &Icon {
+    width: 30px;
+    height: 30px;
+  }
+
+  &Text {
+    display: flex;
+    align-items: start;
+    justify-content: center;
+    flex-direction: column;
+
+    &Title {
+      color: var(--text);
+      font-size: 20px;
+
+      @include mixins.mobile {
+        width: 100%;
+        font-size: 14px;
+      }
+    }
+  }
+
+  &Accept {
+    right: 15px;
+    top: 30%;
+    position: absolute;
+    width: 25px;
+    height: 25px;
+
+    @include mixins.mobile {
+      right: 10px;
+      top: 35%;
+      width: 20px;
+      height: 20px;
+    }
+  }
+}
+
+.active {
+  background-color: var(--background-color);
+}

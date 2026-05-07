@@ -1,0 +1,41 @@
+.container {
+  width: 100%;
+  max-width: 150px;
+  border-radius: 5px;
+  aspect-ratio: 1/1;
+  cursor: pointer;
+  border: 1px solid var(--border);
+  background-color: var(--cards-color);
+  transition: 0.2s ease;
+  font-size: 3em;
+
+  &:hover {
+    opacity: 0.8;
+  }
+
+  @include mixins.mobile {
+    font-size: 11px;
+  }
+}
+
+.selected {
+  background-color: var(--attention);
+  color: #ffffff;
+}
+
+.disabled {
+  background-color: var(--cards-color);
+  cursor: default !important;
+}
+
+.enter {
+  max-height: 150px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &Image {
+    width: 80%;
+    height: 80%;
+  }
+}

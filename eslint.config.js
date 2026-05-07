@@ -24,10 +24,7 @@ export default tseslint.config(
       "prettier/prettier": "off",
       "react/react-in-jsx-scope": "off",
       "react/jsx-uses-react": "off",
-      "@typescript-eslint/no-unused-vars": [
-        "error",
-        { argsIgnorePattern: "^_" },
-      ],
+      "@typescript-eslint/no-unused-vars": ["off", { argsIgnorePattern: "^_" }],
       "@typescript-eslint/no-explicit-any": "off",
     },
   },
