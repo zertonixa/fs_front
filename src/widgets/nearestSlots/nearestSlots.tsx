@@ -43,7 +43,7 @@ const handleClick = (
   const slots = useNearestSlots(cso);
 
   return (
-    <div className={styles.container} onClick={() => console.log(slots.data)}>
+    <div className={styles.container}>
       <h2>Ближайшие свободные позиции</h2>
       <div className={styles.containerBody}>
         {slots.data && slots.data.map((el) => (

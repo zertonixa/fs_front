@@ -46,7 +46,6 @@ export function useBookingParams() {
 
 
 export const useSlots = ({ type, floor, cso }: { type: "WASHING" | "DRYING"; floor: number; cso: number }) => {
-  console.log(type, floor, cso)
   return useApiQuery<Slot[][]>({
     key: ["slots", cso],
     path: "/slots",

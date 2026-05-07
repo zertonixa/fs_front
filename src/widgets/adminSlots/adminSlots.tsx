@@ -22,10 +22,6 @@ export const AdminSlots = () => {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [selectedSlot, setSelectedSlot] = useState<Slot | null>(null);
 
-    useEffect(() => {
-        console.log(slots.data, floor, cso)
-    }, [floor, cso])
-
   const [isCreateOpen, setIsCreateOpen] = useState(false);
 
   const openPopup = (slot: Slot) => {

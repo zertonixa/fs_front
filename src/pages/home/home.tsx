@@ -30,7 +30,7 @@ export const Home = () => {
       <Header
         title={
           weather.data
-            ? `В городе ${weather.data.city} сейчас ${weather.data.temp} C`
+            ? `В ${weather.data.city.slice(0, -1) + "е"} сейчас ${weather.data.temp}°`
             : ""
         }
       />
