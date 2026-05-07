@@ -5,10 +5,6 @@ export const SelectCso = () => {
   const { cso, availableCso, changeCso } = useSelectCso();
 
   return (
-    <Options
-      values={availableCso}
-      selected={cso}
-      onValueChanged={changeCso}
-    />
+    <Options values={availableCso} selected={cso} onValueChanged={changeCso} />
   );
 };

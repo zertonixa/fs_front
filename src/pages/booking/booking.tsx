@@ -21,11 +21,7 @@ export const BookingPage = () => {
 
   return (
     <div className={styles.container}>
-      <Seo
-        title={title}
-        description={description}
-        canonical={canonical}
-      />
+      <Seo title={title} description={description} canonical={canonical} />
 
       <Header title="Выберите дату, время и места" />
 

@@ -3,14 +3,14 @@ import arrow from "@shared/assets/calendar_arrow.webp";
 import { days } from "./libs";
 import React, { useMemo, useState, useCallback } from "react";
 import { buildMonthDays } from "../hooks/utils";
-import { 
-  addMonths, 
-  subMonths, 
-  format, 
-  startOfMonth, 
+import {
+  addMonths,
+  subMonths,
+  format,
+  startOfMonth,
   differenceInDays,
   startOfDay,
-  format as formatDate
+  format as formatDate,
 } from "date-fns";
 import { ru } from "date-fns/locale";
 import { useBookingStore } from "@/shared/store/booking/booking";
@@ -21,7 +21,9 @@ export const Calendar = React.memo(() => {
   const bookingType = useBookingStore((state) => state.bookingType);
   const selectedStartDay = useBookingStore((state) => state.selectedStartDay);
   const selectedEndDay = useBookingStore((state) => state.selectedEndDay);
-  const setSelectedStartDay = useBookingStore((state) => state.setSelectedStartDay);
+  const setSelectedStartDay = useBookingStore(
+    (state) => state.setSelectedStartDay,
+  );
   const setSelectedEndDay = useBookingStore((state) => state.setSelectedEndDay);
 
   const maxRange = bookingType === "WASHING" ? 1 : 3;
@@ -42,41 +44,51 @@ export const Calendar = React.memo(() => {
   };
 
   const getDateString = useCallback((date: Date): string => {
-    return formatDate(startOfDay(date), 'yyyy-MM-dd');
+    return formatDate(startOfDay(date), "yyyy-MM-dd");
   }, []);
 
-  const isSelected = useCallback((date: Date): boolean => {
-    if (!selectedStartDay) return false;
-    
-    const dateStr = getDateString(date);
-    return dateStr === selectedStartDay || dateStr === selectedEndDay;
-  }, [selectedStartDay, selectedEndDay, getDateString]);
+  const isSelected = useCallback(
+    (date: Date): boolean => {
+      if (!selectedStartDay) return false;
 
-  const handleDayClick = useCallback((date: Date) => {
-    const dateStr = getDateString(date);
-    
-    if (!selectedStartDay) {
-      setSelectedStartDay(dateStr);
-    } 
-    else if (!selectedEndDay) {
-      const start = new Date(selectedStartDay);
-      const clicked = new Date(dateStr);
-      
-      const diffDays = Math.abs(differenceInDays(clicked, start)) + 1;
-      
-      if (diffDays > maxRange) {
+      const dateStr = getDateString(date);
+      return dateStr === selectedStartDay || dateStr === selectedEndDay;
+    },
+    [selectedStartDay, selectedEndDay, getDateString],
+  );
+
+  const handleDayClick = useCallback(
+    (date: Date) => {
+      const dateStr = getDateString(date);
+
+      if (!selectedStartDay) {
         setSelectedStartDay(dateStr);
-        setSelectedEndDay('');
-      } else {
-        setSelectedEndDay(dateStr);
-      }
-    }
+      } else if (!selectedEndDay) {
+        const start = new Date(selectedStartDay);
+        const clicked = new Date(dateStr);
 
-    else {
-      setSelectedStartDay(dateStr);
-      setSelectedEndDay('');
-    }
-  }, [selectedStartDay, selectedEndDay, maxRange, setSelectedStartDay, setSelectedEndDay, getDateString]);
+        const diffDays = Math.abs(differenceInDays(clicked, start)) + 1;
+
+        if (diffDays > maxRange) {
+          setSelectedStartDay(dateStr);
+          setSelectedEndDay("");
+        } else {
+          setSelectedEndDay(dateStr);
+        }
+      } else {
+        setSelectedStartDay(dateStr);
+        setSelectedEndDay("");
+      }
+    },
+    [
+      selectedStartDay,
+      selectedEndDay,
+      maxRange,
+      setSelectedStartDay,
+      setSelectedEndDay,
+      getDateString,
+    ],
+  );
 
   return (
     <div className={styles.container}>

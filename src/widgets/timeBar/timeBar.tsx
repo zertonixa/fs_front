@@ -1,11 +1,13 @@
 import { TimeBar } from "@/entities/timeBar/ui";
 import styles from "./timeBar.module.scss";
 import React, { useMemo } from "react";
-import { useAvailableStarts, useAvailableEnds } from "@/entities/timeBar/hooks/hooks";
+import {
+  useAvailableStarts,
+  useAvailableEnds,
+} from "@/entities/timeBar/hooks/hooks";
 import { useBookingStore } from "@/shared/store/booking/booking";
 
 export const TimeBarWidget = React.memo(() => {
-
   const bookingType = useBookingStore((state) => state.bookingType);
   const floor = useBookingStore((state) => state.floor);
   const cso = useBookingStore((state) => state.cso);
@@ -13,13 +15,17 @@ export const TimeBarWidget = React.memo(() => {
   const selectedEndDay = useBookingStore((state) => state.selectedEndDay);
   const selectedStartTime = useBookingStore((state) => state.selectedStartTime);
   const selectedEndTime = useBookingStore((state) => state.selectedEndTime);
-  
-  const setSelectedStartTime = useBookingStore((state) => state.setSelectedStartTime);
-  const setSelectedEndTime = useBookingStore((state) => state.setSelectedEndTime);
+
+  const setSelectedStartTime = useBookingStore(
+    (state) => state.setSelectedStartTime,
+  );
+  const setSelectedEndTime = useBookingStore(
+    (state) => state.setSelectedEndTime,
+  );
 
   const baseDate = useMemo(() => {
     if (selectedStartDay) {
-      const [year, month, day] = selectedStartDay.split('-').map(Number);
+      const [year, month, day] = selectedStartDay.split("-").map(Number);
       return new Date(year, month - 1, day);
     }
     return new Date();
@@ -27,7 +33,7 @@ export const TimeBarWidget = React.memo(() => {
 
   const endBaseDate = useMemo(() => {
     if (selectedStartDay) {
-      const [year, month, day] = selectedStartDay.split('-').map(Number);
+      const [year, month, day] = selectedStartDay.split("-").map(Number);
       const date = new Date(year, month - 1, day, 23, 59, 0);
       return date;
     }
@@ -37,7 +43,7 @@ export const TimeBarWidget = React.memo(() => {
 
   const endDateForSearch = useMemo(() => {
     if (selectedEndDay) {
-      const [year, month, day] = selectedEndDay.split('-').map(Number);
+      const [year, month, day] = selectedEndDay.split("-").map(Number);
       const date = new Date(year, month - 1, day, 23, 59, 0);
       return date;
     }
@@ -52,7 +58,7 @@ export const TimeBarWidget = React.memo(() => {
     cso,
     bookingType,
     selectedStartTime || baseDate.toISOString(),
-    endDateForSearch?.toISOString() || endBaseDate?.toISOString()
+    endDateForSearch?.toISOString() || endBaseDate?.toISOString(),
   );
 
   const handleStartTimeSelect = (dateString: string) => {
@@ -66,7 +72,7 @@ export const TimeBarWidget = React.memo(() => {
   const formatDateDisplay = (date: Date): string => {
     return date.toLocaleDateString("ru-RU", {
       day: "numeric",
-      month: "long"
+      month: "long",
     });
   };
 
@@ -81,12 +87,13 @@ export const TimeBarWidget = React.memo(() => {
         values={startsQuery.data || []}
         onValueChanged={handleStartTimeSelect}
       />
-      
+
       <span className={styles.containerTitle}>
-        Конец: {formatDateDisplay(
-          selectedEndTime 
+        Конец:{" "}
+        {formatDateDisplay(
+          selectedEndTime
             ? new Date(selectedEndTime)
-            : new Date(baseDate.getTime() + 24 * 60 * 60 * 1000)
+            : new Date(baseDate.getTime() + 24 * 60 * 60 * 1000),
         )}
       </span>
       <TimeBar

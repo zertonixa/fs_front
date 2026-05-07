@@ -9,19 +9,21 @@ import { Logout } from "@/features/logout/ui";
 import { Report } from "../reportPopup";
 
 export const Header = ({ title }: HeadersProps) => {
-
   const { pathname } = useLocation();
 
-  const data = useApiQuery<{username: string, telegram_id: number, id: string, is_admin: boolean, is_root_admin: boolean}>({key: ["me"], path: "auth/me"});
+  const data = useApiQuery<{
+    username: string;
+    telegram_id: number;
+    id: string;
+    is_admin: boolean;
+    is_root_admin: boolean;
+  }>({ key: ["me"], path: "auth/me" });
 
   return (
     <div className={styles.container}>
       <div className={styles.containerTitle}>
         {pathname !== "/" && (
-          <Link
-            className={styles.containerTitleImage}
-            to={'/'}
-          >
+          <Link className={styles.containerTitleImage} to={"/"}>
             <img
               src={home}
               alt="home"
@@ -32,10 +34,18 @@ export const Header = ({ title }: HeadersProps) => {
         <span className={styles.containerTitleTitle}>{title}</span>
       </div>
       <div className={styles.containerButtons}>
-        {data.data?.is_admin && <Link type="button" to={'/admin'} className={styles.containerButtonsAdmin}><Settings/></Link>}
+        {data.data?.is_admin && (
+          <Link
+            type="button"
+            to={"/admin"}
+            className={styles.containerButtonsAdmin}
+          >
+            <Settings />
+          </Link>
+        )}
         <SelectCso />
-        <Report/>
-        <Logout/>
+        <Report />
+        <Logout />
       </div>
     </div>
   );

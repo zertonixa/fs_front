@@ -44,8 +44,15 @@ export function useBookingParams() {
   };
 }
 
-
-export const useSlots = ({ type, floor, cso }: { type: "WASHING" | "DRYING"; floor: number; cso: number }) => {
+export const useSlots = ({
+  type,
+  floor,
+  cso,
+}: {
+  type: "WASHING" | "DRYING";
+  floor: number;
+  cso: number;
+}) => {
   return useApiQuery<Slot[][]>({
     key: ["slots", cso],
     path: "/slots",
@@ -53,12 +60,32 @@ export const useSlots = ({ type, floor, cso }: { type: "WASHING" | "DRYING"; flo
   });
 };
 
-  export const useOverlaps = ({floor, cso, type, starts_at, ends_at, enabled = true}: {type: "WASHING" | "DRYING", floor: number, cso: number, starts_at: Date, ends_at: Date, enabled?: boolean}) => 
-    useApiQuery<Slot[][]>({
+export const useOverlaps = ({
+  floor,
+  cso,
+  type,
+  starts_at,
+  ends_at,
+  enabled = true,
+}: {
+  type: "WASHING" | "DRYING";
+  floor: number;
+  cso: number;
+  starts_at: Date;
+  ends_at: Date;
+  enabled?: boolean;
+}) =>
+  useApiQuery<Slot[][]>({
     key: ["slots-overlaps"],
     path: "/bookings/overlaps",
-    params: {type: type, floor: floor, cso: cso, starts_at: starts_at, ends_at: ends_at},
-    enabled: enabled
+    params: {
+      type: type,
+      floor: floor,
+      cso: cso,
+      starts_at: starts_at,
+      ends_at: ends_at,
+    },
+    enabled: enabled,
   });
 
 export type CreateSlotPayload = {
@@ -71,22 +98,20 @@ export type CreateSlotPayload = {
 };
 
 export const useChangeSlot = () => {
-  const createSlot = useApiMutation<Slot, CreateSlotPayload>(
-    "/slots",
-    "post",
-    { invalidate: ["slots"] }
-  );
+  const createSlot = useApiMutation<Slot, CreateSlotPayload>("/slots", "post", {
+    invalidate: ["slots"],
+  });
 
   const deleteSlot = useApiMutation<void, { id: string }>(
     ({ id }) => `/slots/${id}`,
     "delete",
-    { invalidate: ["slots"] }
+    { invalidate: ["slots"] },
   );
 
   const toggleSlotStatus = useApiMutation<Slot, { id: string }>(
     ({ id }) => `/slots/${id}/toggle-status`,
     "patch",
-    { invalidate: ["slots"] }
+    { invalidate: ["slots"] },
   );
 
   return {

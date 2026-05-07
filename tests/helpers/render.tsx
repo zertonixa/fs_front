@@ -4,7 +4,9 @@ import { afterEach } from "vitest";
 
 // React 18+/19 проверяет этот флаг и без него пишет warning про act(...).
 // Vitest + jsdom сами его не выставляют.
-(globalThis as typeof globalThis & { IS_REACT_ACT_ENVIRONMENT?: boolean }).IS_REACT_ACT_ENVIRONMENT = true;
+(
+  globalThis as typeof globalThis & { IS_REACT_ACT_ENVIRONMENT?: boolean }
+).IS_REACT_ACT_ENVIRONMENT = true;
 
 const mounted: Array<{ root: Root; container: HTMLDivElement }> = [];
 
@@ -44,13 +46,17 @@ export function render(ui: React.ReactElement): RenderResult {
 
 export function click(element: Element): void {
   act(() => {
-    element.dispatchEvent(new MouseEvent("click", { bubbles: true, cancelable: true }));
+    element.dispatchEvent(
+      new MouseEvent("click", { bubbles: true, cancelable: true }),
+    );
   });
 }
 
 export function mouseDown(element: Element): void {
   act(() => {
-    element.dispatchEvent(new MouseEvent("mousedown", { bubbles: true, cancelable: true }));
+    element.dispatchEvent(
+      new MouseEvent("mousedown", { bubbles: true, cancelable: true }),
+    );
   });
 }
 
@@ -60,7 +66,10 @@ export async function flushPromises(): Promise<void> {
   });
 }
 
-export async function waitFor(assertion: () => void, timeout = 1000): Promise<void> {
+export async function waitFor(
+  assertion: () => void,
+  timeout = 1000,
+): Promise<void> {
   const startedAt = Date.now();
   let lastError: unknown;
 
@@ -79,16 +88,26 @@ export async function waitFor(assertion: () => void, timeout = 1000): Promise<vo
   throw lastError;
 }
 
-export function byText(text: string | RegExp, root: ParentNode = document): HTMLElement {
-  const matcher = typeof text === "string" ? (value: string) => value.includes(text) : (value: string) => text.test(value);
-  const element = Array.from(root.querySelectorAll<HTMLElement>("body *"))
-    .find((node) => matcher(node.textContent ?? ""));
+export function byText(
+  text: string | RegExp,
+  root: ParentNode = document,
+): HTMLElement {
+  const matcher =
+    typeof text === "string"
+      ? (value: string) => value.includes(text)
+      : (value: string) => text.test(value);
+  const element = Array.from(root.querySelectorAll<HTMLElement>("body *")).find(
+    (node) => matcher(node.textContent ?? ""),
+  );
 
   if (!element) throw new Error(`Element with text ${String(text)} not found`);
   return element;
 }
 
-export function byExactText(text: string, root: ParentNode = document): HTMLElement {
+export function byExactText(
+  text: string,
+  root: ParentNode = document,
+): HTMLElement {
   const element = Array.from(root.querySelectorAll<HTMLElement>("body *"))
     .reverse()
     .find((node) => (node.textContent ?? "").trim() === text);

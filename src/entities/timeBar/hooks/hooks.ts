@@ -23,20 +23,26 @@ export const useTimeInterval = (timeStart: string, timeEnd: string) =>
   });
 
 export const useAvailableStarts = (
-  floor: number, 
-  cso: number, 
-  type: string, 
-  fromDate: Date
+  floor: number,
+  cso: number,
+  type: string,
+  fromDate: Date,
 ) => {
   return useApiQuery<string[]>({
-    key: ["available-starts", floor, cso, type, fromDate.toISOString().split('T')[0]],
+    key: [
+      "available-starts",
+      floor,
+      cso,
+      type,
+      fromDate.toISOString().split("T")[0],
+    ],
     path: "/bookings/available-starts",
     params: {
       floor,
       cso,
       type,
       from: fromDate.toISOString(),
-      to: new Date(fromDate.getTime() + 24 * 60 * 60 * 1000).toISOString()
+      to: new Date(fromDate.getTime() + 24 * 60 * 60 * 1000).toISOString(),
     },
   });
 };
@@ -46,7 +52,7 @@ export const useAvailableEnds = (
   cso: number,
   type: string,
   startDate: string,
-  endLimitDate?: string
+  endLimitDate?: string,
 ) => {
   const getStartOfNextDay = (date: string): Date => {
     const nextDay = new Date(date);
@@ -56,17 +62,22 @@ export const useAvailableEnds = (
   };
 
   return useApiQuery<string[]>({
-    key: ["available-ends", floor, cso, type, startDate, endLimitDate?.split('T')[0]],
+    key: [
+      "available-ends",
+      floor,
+      cso,
+      type,
+      startDate,
+      endLimitDate?.split("T")[0],
+    ],
     path: "/bookings/available-ends",
     params: {
       floor,
       cso,
       type,
       start: startDate,
-      end: endLimitDate 
-        ? getStartOfNextDay(endLimitDate)
-        : undefined
+      end: endLimitDate ? getStartOfNextDay(endLimitDate) : undefined,
     },
-    enabled: !!startDate
+    enabled: !!startDate,
   });
 };

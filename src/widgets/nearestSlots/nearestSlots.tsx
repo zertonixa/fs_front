@@ -17,28 +17,27 @@ export const NearestSlots = () => {
 
   const cso = useBookingStore((state) => state.cso);
 
-const handleClick = (
-  floor: number,
-  startsAt: string,
-  endsAt: string,
-  type: "WASHING" | "DRYING",
-  slot: string
-) => {
-  const start = splitDateTime(startsAt);
-  const end = splitDateTime(endsAt);
+  const handleClick = (
+    floor: number,
+    startsAt: string,
+    endsAt: string,
+    type: "WASHING" | "DRYING",
+    slot: string,
+  ) => {
+    const start = splitDateTime(startsAt);
+    const end = splitDateTime(endsAt);
 
-  setStartDay(start.day);
-  setStart(startsAt);
+    setStartDay(start.day);
+    setStart(startsAt);
 
-  setEndDay(end.day);
-  setEnd(endsAt);
+    setEndDay(end.day);
+    setEnd(endsAt);
 
-  setFloor(floor);
-  setSlots(slot);
+    setFloor(floor);
+    setSlots(slot);
 
-  navigate(`/booking?type=${type}`);
-};
-
+    navigate(`/booking?type=${type}`);
+  };
 
   const slots = useNearestSlots(cso);
 
@@ -46,17 +45,26 @@ const handleClick = (
     <div className={styles.container}>
       <h2>Ближайшие свободные позиции</h2>
       <div className={styles.containerBody}>
-        {slots.data && slots.data.map((el) => (
-          <SlotCard
-            key={el.id}
-            type={"WASHING"}
-            floor={el.floor}
-            id={el.slot_id}
-            place={el.slot_place}
-            startsAt={el.starts_at}
-            onClick={() => handleClick(el.floor, el.starts_at, el.ends_at, "WASHING", el.slot_id)}
-          />
-        ))}
+        {slots.data &&
+          slots.data.map((el) => (
+            <SlotCard
+              key={el.id}
+              type={"WASHING"}
+              floor={el.floor}
+              id={el.slot_id}
+              place={el.slot_place}
+              startsAt={el.starts_at}
+              onClick={() =>
+                handleClick(
+                  el.floor,
+                  el.starts_at,
+                  el.ends_at,
+                  "WASHING",
+                  el.slot_id,
+                )
+              }
+            />
+          ))}
       </div>
     </div>
   );

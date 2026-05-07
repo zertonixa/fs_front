@@ -5,13 +5,13 @@ export const useBanUser = () => {
   const ban = useApiMutation<User, { id: string }>(
     ({ id }) => `/admin/ban/${id}`,
     "patch",
-    { invalidate: ["users"] }
+    { invalidate: ["users"] },
   );
 
   const unban = useApiMutation<User, { id: string }>(
     ({ id }) => `/admin/unban/${id}`,
     "patch",
-    { invalidate: ["users"] }
+    { invalidate: ["users"] },
   );
 
   return { ban, unban };

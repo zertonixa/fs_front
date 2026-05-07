@@ -15,7 +15,11 @@ export type ApiError = {
   errors?: unknown;
 };
 
-export function useApiMutation<TData = unknown, TVars = unknown, TError = AxiosError<ApiError>>(
+export function useApiMutation<
+  TData = unknown,
+  TVars = unknown,
+  TError = AxiosError<ApiError>,
+>(
   path: PathResolver<TVars>,
   method: HttpMethod = "post",
   options?: {
@@ -26,9 +30,9 @@ export function useApiMutation<TData = unknown, TVars = unknown, TError = AxiosE
       data: TData | undefined,
       error: TError | null,
       variables: TVars,
-      context?: unknown
+      context?: unknown,
     ) => void;
-  }
+  },
 ) {
   const qc = useQueryClient();
 

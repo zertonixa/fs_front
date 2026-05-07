@@ -38,17 +38,20 @@ export const useUsers = ({
     ],
     initialPageParam: 1,
     queryFn: async ({ pageParam }) => {
-      const response = await axiosInstance.get<PaginatedUsersResponse>("users", {
-        params: {
-          page: pageParam,
-          per_page: PER_PAGE,
-          ...(name ? { name } : {}),
-          ...(isBanned !== undefined ? { is_banned: isBanned } : {}),
-          ...(isAdmin !== undefined ? { is_admin: isAdmin } : {}),
-          ...(sortBy !== undefined ? { sort_by: sortBy } : {}),
-          ...(sortOrder !== undefined ? { sort_order: sortOrder } : {}),
+      const response = await axiosInstance.get<PaginatedUsersResponse>(
+        "users",
+        {
+          params: {
+            page: pageParam,
+            per_page: PER_PAGE,
+            ...(name ? { name } : {}),
+            ...(isBanned !== undefined ? { is_banned: isBanned } : {}),
+            ...(isAdmin !== undefined ? { is_admin: isAdmin } : {}),
+            ...(sortBy !== undefined ? { sort_by: sortBy } : {}),
+            ...(sortOrder !== undefined ? { sort_order: sortOrder } : {}),
+          },
         },
-      });
+      );
 
       return response.data;
     },

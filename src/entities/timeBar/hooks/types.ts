@@ -3,7 +3,7 @@ export interface Time {
 }
 
 export interface Slot {
-  id: string,
-  is_avalivale: boolean,
-  place: number
+  id: string;
+  is_avalivale: boolean;
+  place: number;
 }

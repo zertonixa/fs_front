@@ -1,104 +1,104 @@
 .container {
-    width: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 14px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background-color: var(--cards-color);
+  box-shadow: colors.$box-shadow;
+  transition:
+    transform 0.2s ease,
+    opacity 0.2s ease,
+    border-color 0.2s ease;
+
+  &Clickable {
+    cursor: pointer;
+
+    &:hover {
+      transform: translateY(-2px);
+      opacity: 0.9;
+    }
+  }
+
+  &Header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+
+    @include mixins.mobile {
+      align-items: flex-start;
+      flex-direction: column;
+    }
+  }
+
+  &Date {
+    font-size: 13px;
+    color: var(--hint, #8f8f8f);
+  }
+
+  &Status {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 28px;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 600;
+    border: 1px solid transparent;
+
+    &Sent {
+      color: #8a6d3b;
+      background-color: rgb(255 243 205);
+      border-color: rgb(255 234 167);
+    }
+
+    &Updated {
+      color: #ba7e2e;
+      background-color: rgba(151, 93, 49, 0.215);
+      border-color: rgb(211, 179, 76);
+    }
+
+    &Received {
+      color: #2f6b99;
+      background-color: rgb(222 239 255);
+      border-color: rgb(184 221 255);
+    }
+
+    &Solved {
+      color: #2f7d4d;
+      background-color: rgb(224 248 232);
+      border-color: rgb(183 234 198);
+    }
+  }
+
+  &Body {
     display: flex;
     flex-direction: column;
-    gap: 12px;
-    padding: 14px;
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    background-color: var(--cards-color);
-    box-shadow: colors.$box-shadow;
-    transition:
-        transform 0.2s ease,
-        opacity 0.2s ease,
-        border-color 0.2s ease;
+    gap: 8px;
+  }
 
-    &Clickable {
-        cursor: pointer;
+  &Title {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text);
+  }
 
-        &:hover {
-            transform: translateY(-2px);
-            opacity: 0.9;
-        }
-    }
+  &Text {
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.45;
+    color: var(--text);
+    word-break: break-word;
 
-    &Header {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 10px;
-
-        @include mixins.mobile {
-            align-items: flex-start;
-            flex-direction: column;
-        }
-    }
-
-    &Date {
-        font-size: 13px;
-        color: var(--hint, #8f8f8f);
-    }
-
-    &Status {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        min-height: 28px;
-        padding: 4px 10px;
-        border-radius: 999px;
-        font-size: 12px;
-        font-weight: 600;
-        border: 1px solid transparent;
-
-        &Sent {
-            color: #8a6d3b;
-            background-color: rgb(255 243 205);
-            border-color: rgb(255 234 167);
-        }
-
-        &Updated {
-            color: #ba7e2e;
-            background-color: rgba(151, 93, 49, 0.215);
-            border-color: rgb(211, 179, 76);
-        }
-
-        &Received {
-            color: #2f6b99;
-            background-color: rgb(222 239 255);
-            border-color: rgb(184 221 255);
-        }
-
-        &Solved {
-            color: #2f7d4d;
-            background-color: rgb(224 248 232);
-            border-color: rgb(183 234 198);
-        }
-    }
-
-    &Body {
-        display: flex;
-        flex-direction: column;
-        gap: 8px;
-    }
-
-    &Title {
-        font-size: 16px;
-        font-weight: 600;
-        color: var(--text);
-    }
-
-    &Text {
-        margin: 0;
-        font-size: 14px;
-        line-height: 1.45;
-        color: var(--text);
-        word-break: break-word;
-
-        display: -webkit-box;
-        -webkit-line-clamp: 3;
-        line-clamp: 3;
-        -webkit-box-orient: vertical;
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 }

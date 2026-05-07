@@ -41,6 +41,9 @@ describe("logout and navigation flow", () => {
       expect(document.body.textContent).toContain("login-page");
     });
 
-    expect(logoutMock.mutate).toHaveBeenCalledWith({}, expect.objectContaining({ onSuccess: expect.any(Function) }));
+    expect(logoutMock.mutate).toHaveBeenCalledWith(
+      {},
+      expect.objectContaining({ onSuccess: expect.any(Function) }),
+    );
   });
 });

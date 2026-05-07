@@ -4,22 +4,41 @@ import { MemoryRouter, useLocation } from "react-router-dom";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { render, click } from "../helpers/render";
 import { useUserBookings } from "@/entities/booking/hooks";
-import { useBookingParams, useChangeSlot, useOverlaps, useSlots } from "@/entities/bookingSlots/hooks/hooks";
+import {
+  useBookingParams,
+  useChangeSlot,
+  useOverlaps,
+  useSlots,
+} from "@/entities/bookingSlots/hooks/hooks";
 
 const spies = vi.hoisted(() => ({
   useApiQuery: vi.fn(),
   useApiMutation: vi.fn(),
 }));
 
-vi.mock("@/shared/lib/hooks/useApiQuery", () => ({ useApiQuery: spies.useApiQuery }));
-vi.mock("@shared/lib/hooks/useApiQuery", () => ({ useApiQuery: spies.useApiQuery }));
-vi.mock("@/shared/lib/hooks/useApiMutation", () => ({ useApiMutation: spies.useApiMutation }));
-vi.mock("@shared/lib/hooks/useApiMutation", () => ({ useApiMutation: spies.useApiMutation }));
+vi.mock("@/shared/lib/hooks/useApiQuery", () => ({
+  useApiQuery: spies.useApiQuery,
+}));
+vi.mock("@shared/lib/hooks/useApiQuery", () => ({
+  useApiQuery: spies.useApiQuery,
+}));
+vi.mock("@/shared/lib/hooks/useApiMutation", () => ({
+  useApiMutation: spies.useApiMutation,
+}));
+vi.mock("@shared/lib/hooks/useApiMutation", () => ({
+  useApiMutation: spies.useApiMutation,
+}));
 
 describe("booking hooks", () => {
   beforeEach(() => {
     spies.useApiQuery.mockReset().mockReturnValue({ data: [] });
-    spies.useApiMutation.mockReset().mockImplementation((path, method) => ({ path, method, mutate: vi.fn() }));
+    spies.useApiMutation
+      .mockReset()
+      .mockImplementation((path, method) => ({
+        path,
+        method,
+        mutate: vi.fn(),
+      }));
   });
 
   it("useUserBookings запрашивает брони текущего пользователя", () => {
@@ -72,7 +91,13 @@ describe("booking hooks", () => {
     expect(spies.useApiQuery).toHaveBeenCalledWith({
       key: ["slots-overlaps"],
       path: "/bookings/overlaps",
-      params: { type: "DRYING", floor: 3, cso: 1, starts_at: startsAt, ends_at: endsAt },
+      params: {
+        type: "DRYING",
+        floor: 3,
+        cso: 1,
+        starts_at: startsAt,
+        ends_at: endsAt,
+      },
       enabled: false,
     });
   });
@@ -85,12 +110,28 @@ describe("booking hooks", () => {
 
     render(<Probe />);
 
-    expect(spies.useApiMutation).toHaveBeenNthCalledWith(1, "/slots", "post", { invalidate: ["slots"] });
-    expect(spies.useApiMutation).toHaveBeenNthCalledWith(2, expect.any(Function), "delete", { invalidate: ["slots"] });
-    expect(spies.useApiMutation).toHaveBeenNthCalledWith(3, expect.any(Function), "patch", { invalidate: ["slots"] });
+    expect(spies.useApiMutation).toHaveBeenNthCalledWith(1, "/slots", "post", {
+      invalidate: ["slots"],
+    });
+    expect(spies.useApiMutation).toHaveBeenNthCalledWith(
+      2,
+      expect.any(Function),
+      "delete",
+      { invalidate: ["slots"] },
+    );
+    expect(spies.useApiMutation).toHaveBeenNthCalledWith(
+      3,
+      expect.any(Function),
+      "patch",
+      { invalidate: ["slots"] },
+    );
 
-    const deletePath = spies.useApiMutation.mock.calls[1][0] as (vars: { id: string }) => string;
-    const togglePath = spies.useApiMutation.mock.calls[2][0] as (vars: { id: string }) => string;
+    const deletePath = spies.useApiMutation.mock.calls[1][0] as (vars: {
+      id: string;
+    }) => string;
+    const togglePath = spies.useApiMutation.mock.calls[2][0] as (vars: {
+      id: string;
+    }) => string;
 
     expect(deletePath({ id: "slot-7" })).toBe("/slots/slot-7");
     expect(togglePath({ id: "slot-7" })).toBe("/slots/slot-7/toggle-status");
@@ -106,8 +147,12 @@ describe("useBookingParams", () => {
       <div>
         <span data-testid="places">{selectedPlaces.join("|")}</span>
         <span data-testid="search">{location.search}</span>
-        <button type="button" onClick={() => togglePlace(1)}>toggle 1</button>
-        <button type="button" onClick={() => togglePlace(7)}>toggle 7</button>
+        <button type="button" onClick={() => togglePlace(1)}>
+          toggle 1
+        </button>
+        <button type="button" onClick={() => togglePlace(7)}>
+          toggle 7
+        </button>
       </div>
     );
   }
@@ -119,14 +164,22 @@ describe("useBookingParams", () => {
       </MemoryRouter>,
     );
 
-    expect(document.querySelector('[data-testid="places"]')?.textContent).toBe("2|3");
+    expect(document.querySelector('[data-testid="places"]')?.textContent).toBe(
+      "2|3",
+    );
 
     click(document.querySelector("button")!);
-    expect(document.querySelector('[data-testid="places"]')?.textContent).toBe("2|3|1");
-    expect(document.querySelector('[data-testid="search"]')?.textContent).toContain("places=2%2C3%2C1");
+    expect(document.querySelector('[data-testid="places"]')?.textContent).toBe(
+      "2|3|1",
+    );
+    expect(
+      document.querySelector('[data-testid="search"]')?.textContent,
+    ).toContain("places=2%2C3%2C1");
 
     click(document.querySelector("button")!);
-    expect(document.querySelector('[data-testid="places"]')?.textContent).toBe("2|3");
+    expect(document.querySelector('[data-testid="places"]')?.textContent).toBe(
+      "2|3",
+    );
   });
 
   it("не позволяет выбрать больше шести мест", () => {
@@ -138,6 +191,8 @@ describe("useBookingParams", () => {
 
     click(document.querySelectorAll("button")[1]);
 
-    expect(document.querySelector('[data-testid="places"]')?.textContent).toBe("1|2|3|4|5|6");
+    expect(document.querySelector('[data-testid="places"]')?.textContent).toBe(
+      "1|2|3|4|5|6",
+    );
   });
 });

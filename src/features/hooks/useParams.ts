@@ -15,9 +15,8 @@ const parseBookingParams = (sp: URLSearchParams): Params => {
   const floor = sp.get("floor");
   const booking = sp.get("type");
 
-  const bookingType = (booking === "WASHING" || booking === "DRYING") 
-    ? booking 
-    : "WASHING";
+  const bookingType =
+    booking === "WASHING" || booking === "DRYING" ? booking : "WASHING";
 
   const rawPlaces = sp.get("places");
   const places = rawPlaces ? rawPlaces.split(",").filter(Boolean) : [];
@@ -123,6 +122,7 @@ export function useBookingParams() {
     setFloor,
     hasTimeRange: !!current.startTime && !!current.endTime,
     hasPlaces: current.places.length > 0,
-    isComplete: !!current.startTime && !!current.endTime && current.places.length > 0,
+    isComplete:
+      !!current.startTime && !!current.endTime && current.places.length > 0,
   };
 }

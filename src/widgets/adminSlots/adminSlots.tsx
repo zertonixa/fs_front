@@ -42,7 +42,9 @@ export const AdminSlots = () => {
         <div className={styles.containerHeader}>
           <div className={styles.containerHeaderFilters}>
             <label className={styles.containerHeaderFiltersItem}>
-              <span className={styles.containerHeaderFiltersItemLabel}>CSO</span>
+              <span className={styles.containerHeaderFiltersItemLabel}>
+                CSO
+              </span>
               <select
                 className={styles.containerHeaderFiltersItemSelect}
                 value={cso}
@@ -55,7 +57,9 @@ export const AdminSlots = () => {
             </label>
 
             <label className={styles.containerHeaderFiltersItem}>
-              <span className={styles.containerHeaderFiltersItemLabel}>Этаж</span>
+              <span className={styles.containerHeaderFiltersItemLabel}>
+                Этаж
+              </span>
               <select
                 className={styles.containerHeaderFiltersItemSelect}
                 value={floor}
@@ -86,22 +90,26 @@ export const AdminSlots = () => {
             slots.data.map((row, rowIdx) => (
               <div key={rowIdx} className={styles.containerItems}>
                 {row.map((slot) => (
-                    <div key={slot.id} className={styles.containerItemsItem}>
-                        <BookingSlot
-                            place={slot.place}
-                            isDisabled={false}
-                            isSelected={selectedId === slot.id}
-                            isEnter={false}
-                            onClick={() => openPopup(slot)}
-                        />
-                    </div>
+                  <div key={slot.id} className={styles.containerItemsItem}>
+                    <BookingSlot
+                      place={slot.place}
+                      isDisabled={false}
+                      isSelected={selectedId === slot.id}
+                      isEnter={false}
+                      onClick={() => openPopup(slot)}
+                    />
+                  </div>
                 ))}
               </div>
             ))}
         </div>
       </div>
 
-      <SlotPopup isOpen={isPopupOpen} slot={selectedSlot} onClose={closePopup} />
+      <SlotPopup
+        isOpen={isPopupOpen}
+        slot={selectedSlot}
+        onClose={closePopup}
+      />
 
       <CreateSlotPopup
         isOpen={isCreateOpen}

@@ -16,4 +16,4 @@ export const data = [
   },
 ] as const;
 
-export type BookingType = typeof data[number]["type"];
+export type BookingType = (typeof data)[number]["type"];

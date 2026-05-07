@@ -5,7 +5,7 @@ export const useAdmin = () => {
   const toggleAdmin = useApiMutation<User, { id: string }>(
     ({ id }) => `/admin/role/${id}/toggle`,
     "patch",
-    { invalidate: ["users"] }
+    { invalidate: ["users"] },
   );
 
   return { toggleAdmin };

@@ -51,7 +51,11 @@ describe("shared api hooks", () => {
       if (query.isLoading) return <span>loading</span>;
       if (query.error) return <span>error</span>;
 
-      return <span>{query.data ? `${query.data.city}:${query.data.temp}` : "empty"}</span>;
+      return (
+        <span>
+          {query.data ? `${query.data.city}:${query.data.temp}` : "empty"}
+        </span>
+      );
     }
 
     renderWithQueryClient(<Probe />);
@@ -82,8 +86,6 @@ describe("shared api hooks", () => {
     expect(requestMock).not.toHaveBeenCalled();
   });
 
-
-
   it("useApiQuery отдает ошибку в UI при серверном отказе", async () => {
     requestMock.mockRejectedValueOnce({
       response: { status: 500, data: { detail: "Server error" } },
@@ -97,7 +99,8 @@ describe("shared api hooks", () => {
 
       if (query.isLoading) return <span>loading</span>;
       if (query.isError) {
-        const status = (query.error as { response?: { status?: number } }).response?.status;
+        const status = (query.error as { response?: { status?: number } })
+          .response?.status;
         return <span>error:{status}</span>;
       }
 
@@ -124,7 +127,8 @@ describe("shared api hooks", () => {
 
       if (query.isLoading) return <span>loading</span>;
 
-      const status = (query.error as { response?: { status?: number } } | null)?.response?.status;
+      const status = (query.error as { response?: { status?: number } } | null)
+        ?.response?.status;
       if (status === 401) return <span>session-expired</span>;
 
       return <span>authorized</span>;
@@ -149,7 +153,10 @@ describe("shared api hooks", () => {
       );
 
       return (
-        <button type="button" onClick={() => mutation.mutate({ name: "slot-1" })}>
+        <button
+          type="button"
+          onClick={() => mutation.mutate({ name: "slot-1" })}
+        >
           mutate
         </button>
       );
@@ -166,7 +173,11 @@ describe("shared api hooks", () => {
       method: "patch",
       data: { name: "slot-1" },
     });
-    expect(onSuccess).toHaveBeenCalledWith({ id: "booking-1" }, { name: "slot-1" }, undefined);
+    expect(onSuccess).toHaveBeenCalledWith(
+      { id: "booking-1" },
+      { name: "slot-1" },
+      undefined,
+    );
     expect(invalidateSpy).toHaveBeenCalledWith({ queryKey: ["items"] });
   });
 
@@ -178,7 +189,11 @@ describe("shared api hooks", () => {
     });
 
     function Probe() {
-      const mutation = useApiMutation<unknown, { name: string }>("/items", "post", { onError });
+      const mutation = useApiMutation<unknown, { name: string }>(
+        "/items",
+        "post",
+        { onError },
+      );
 
       return (
         <button type="button" onClick={() => mutation.mutate({ name: "" })}>
@@ -201,5 +216,4 @@ describe("shared api hooks", () => {
       data: { name: "" },
     });
   });
-
 });

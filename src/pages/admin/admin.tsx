@@ -21,7 +21,7 @@ export const AdminPage = () => {
         {widget === "Users" && <AdminUsers />}
         {widget === "Slots" && <AdminSlots />}
         {widget === "History" && <AdminHistory />}
-        {widget === "Reports" && <AdminReports/>}
+        {widget === "Reports" && <AdminReports />}
       </div>
     </div>
   );
