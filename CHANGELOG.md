@@ -1,3 +1,11 @@
+## [1.0.1](https://github.com/Zertonixa/fs_front/compare/v1.0.0...v1.0.1) (2026-05-07)
+
+
+### Bug Fixes
+
+* **cd:** cd ([246b52e](https://github.com/Zertonixa/fs_front/commit/246b52e7889ca485cc3be70549c70fba6c161709))
+* **lint:** lint adn format ([60cf84c](https://github.com/Zertonixa/fs_front/commit/60cf84cb8278460aca3326ab82667028f9af0e53))
+
 # 1.0.0 (2026-05-07)
 
 
