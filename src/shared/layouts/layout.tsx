@@ -22,15 +22,19 @@ export const Layout = ({ children }: LayoutProps) => {
 
     if (typeof window === "undefined") return null;
 
-    // @ts-ignore
-    const tg = window.Telegram?.WebApp;
+    const tg = (
+      window as typeof window & {
+        Telegram?: { WebApp?: { initData?: string } };
+      }
+    ).Telegram?.WebApp;
     return tg?.initData ?? null;
   }, []);
 
   const login = useApiMutation("auth/login", "post", {
     onSuccess: async () => {
       const res = await me.refetch();
-      const status = (res.error as any)?.response?.status ?? (res.error as any)?.status;
+      const status =
+        (res.error as any)?.response?.status ?? (res.error as any)?.status;
 
       if (status === 403) {
         navigate("/ban");
@@ -53,11 +57,13 @@ export const Layout = ({ children }: LayoutProps) => {
     },
   });
 
-  const me = useApiQuery<{ username: string; telegram_id: number; id: string }>({
-    key: ["me"],
-    path: "auth/me",
-    enabled: false,
-  });
+  const me = useApiQuery<{ username: string; telegram_id: number; id: string }>(
+    {
+      key: ["me"],
+      path: "auth/me",
+      enabled: false,
+    },
+  );
 
   useEffect(() => {
     if (!initData) {

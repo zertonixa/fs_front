@@ -28,7 +28,9 @@ describe("Calendar component", () => {
       expect(document.body.textContent).toContain(dayName);
     }
 
-    const day24 = Array.from(document.querySelectorAll("button")).find((button) => button.textContent === "24")!;
+    const day24 = Array.from(document.querySelectorAll("button")).find(
+      (button) => button.textContent === "24",
+    )!;
     click(day24);
 
     expect(useBookingStore.getState().selectedStartDay).toBe("2026-04-24");

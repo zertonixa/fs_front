@@ -91,7 +91,7 @@ export const AdminUsers = () => {
         root,
         rootMargin: "120px",
         threshold: 0.1,
-      }
+      },
     );
 
     observer.observe(target);
@@ -145,7 +145,9 @@ export const AdminUsers = () => {
         {usersQuery.isPending && <LoadingSpinner />}
 
         {usersQuery.isError && (
-          <span className={styles.containerState}>Ошибка загрузки пользователей</span>
+          <span className={styles.containerState}>
+            Ошибка загрузки пользователей
+          </span>
         )}
 
         {!usersQuery.isPending && !usersQuery.isError && users.length === 0 && (
@@ -176,7 +178,9 @@ export const AdminUsers = () => {
         )}
 
         {!usersQuery.hasNextPage && users.length > 0 && (
-          <span className={styles.containerState}>Все пользователи загружены</span>
+          <span className={styles.containerState}>
+            Все пользователи загружены
+          </span>
         )}
       </div>
     </div>

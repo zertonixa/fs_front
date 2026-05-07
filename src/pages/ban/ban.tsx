@@ -4,7 +4,6 @@ import { LoadingSpinner } from "@/shared/ui/button/loading/loading";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
-
 export const BanPage = () => {
   const info = useBanResponse();
   const navigate = useNavigate();
@@ -35,12 +34,8 @@ export const BanPage = () => {
       {info.data && (
         <div className={styles.containerInfo}>
           <span>Доступ к приложению был ограничен</span>
-          <span>
-            Дата блокировки: {formatDate(info.data.banned_at || "")}
-          </span>
-          <span>
-            Имя модератора: {info.data.moderator_username}
-          </span>
+          <span>Дата блокировки: {formatDate(info.data.banned_at || "")}</span>
+          <span>Имя модератора: {info.data.moderator_username}</span>
         </div>
       )}
     </div>

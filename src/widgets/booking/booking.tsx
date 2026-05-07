@@ -19,29 +19,33 @@ export const Booking = () => {
 
   const booking = useUserBookings();
 
-  if (booking.isLoading) return <LoadingSpinner/>
+  if (booking.isLoading) return <LoadingSpinner />;
 
   return (
     <div className={styles.container}>
       <h2>Ваши брони</h2>
       <div className={styles.containerBody}>
-        {booking.data && booking.data.map((el) => (
-          <BookingCard
-            key={el.id}
-            floor={el.floor}
-            place={el.slot_places}
-            startsAt={el.starts_at}
-            endsAt={el.ends_at}
-            type={el.type}
-            id={el.id}
-            isActive={isSelected(el.id)}
-            onClick={handleClick}
-          />
-        ))}
+        {booking.data &&
+          booking.data.map((el) => (
+            <BookingCard
+              key={el.id}
+              floor={el.floor}
+              place={el.slot_places}
+              startsAt={el.starts_at}
+              endsAt={el.ends_at}
+              type={el.type}
+              id={el.id}
+              isActive={isSelected(el.id)}
+              onClick={handleClick}
+            />
+          ))}
       </div>
-      {!booking.data || booking.data.length === 0 && (<div className={styles.text}>Броней нет</div>)}
+      {!booking.data ||
+        (booking.data.length === 0 && (
+          <div className={styles.text}>Броней нет</div>
+        ))}
       <div className={styles.containerCancel}>
-        <CancelBooking bookingIds={selected}/>
+        <CancelBooking bookingIds={selected} />
       </div>
     </div>
   );

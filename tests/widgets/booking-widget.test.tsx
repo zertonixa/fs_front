@@ -9,7 +9,9 @@ const mocks = vi.hoisted(() => ({
   useCancelBooking: vi.fn(),
 }));
 
-vi.mock("@/entities/booking/hooks", () => ({ useUserBookings: mocks.useUserBookings }));
+vi.mock("@/entities/booking/hooks", () => ({
+  useUserBookings: mocks.useUserBookings,
+}));
 vi.mock("@/features/cancelBooking/ui/cancelBooking", () => ({
   CancelBooking: ({ bookingIds }: { bookingIds: string[] }) => (
     <div data-testid="cancel-booking">selected:{bookingIds.join(",")}</div>
@@ -63,8 +65,12 @@ describe("Booking widget", () => {
 
     render(<Booking />);
 
-    expect(document.body.textContent).toContain("Стиральная машина, №1, 2 этаж");
-    expect(document.body.textContent).toContain("Сушильная комната, №5, 3 этаж");
+    expect(document.body.textContent).toContain(
+      "Стиральная машина, №1, 2 этаж",
+    );
+    expect(document.body.textContent).toContain(
+      "Сушильная комната, №5, 3 этаж",
+    );
     expect(document.body.textContent).toContain("selected:");
 
     const firstCard = document.querySelector('img[alt="icon"]')!.parentElement!;

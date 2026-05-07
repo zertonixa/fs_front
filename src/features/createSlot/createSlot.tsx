@@ -28,7 +28,9 @@ export const CreateSlotPopup = ({ isOpen, onClose }: CreateSlotPopupProps) => {
   }, [isOpen]);
 
   const canSubmit = useMemo(() => {
-    return Number.isFinite(row) && row > 0 && Number.isFinite(place) && place > 0;
+    return (
+      Number.isFinite(row) && row > 0 && Number.isFinite(place) && place > 0
+    );
   }, [row, place]);
 
   if (!isOpen) return null;
@@ -47,13 +49,18 @@ export const CreateSlotPopup = ({ isOpen, onClose }: CreateSlotPopupProps) => {
       },
       {
         onSuccess: () => onClose(),
-      }
+      },
     );
   };
 
   return (
     <div className={styles.backdrop} onClick={onClose} role="presentation">
-      <div className={styles.container} onClick={(e) => e.stopPropagation()} role="dialog" aria-modal>
+      <div
+        className={styles.container}
+        onClick={(e) => e.stopPropagation()}
+        role="dialog"
+        aria-modal
+      >
         <div className={styles.containerHeader}>
           <div className={styles.containerHeaderTitle}>
             <span>Создать слот</span>
@@ -62,7 +69,11 @@ export const CreateSlotPopup = ({ isOpen, onClose }: CreateSlotPopupProps) => {
             </span>
           </div>
 
-          <button className={styles.containerHeaderClose} onClick={onClose} type="button">
+          <button
+            className={styles.containerHeaderClose}
+            onClick={onClose}
+            type="button"
+          >
             ✕
           </button>
         </div>
@@ -71,17 +82,29 @@ export const CreateSlotPopup = ({ isOpen, onClose }: CreateSlotPopupProps) => {
           <div className={styles.containerFormGrid}>
             <label className={styles.containerFormField}>
               <span className={styles.containerFormLabel}>Тип</span>
-              <input className={styles.containerFormInput} value={bookingType} disabled />
+              <input
+                className={styles.containerFormInput}
+                value={bookingType}
+                disabled
+              />
             </label>
 
             <label className={styles.containerFormField}>
               <span className={styles.containerFormLabel}>Этаж</span>
-              <input className={styles.containerFormInput} value={floor} disabled />
+              <input
+                className={styles.containerFormInput}
+                value={floor}
+                disabled
+              />
             </label>
 
             <label className={styles.containerFormField}>
               <span className={styles.containerFormLabel}>CSO</span>
-              <input className={styles.containerFormInput} value={cso} disabled />
+              <input
+                className={styles.containerFormInput}
+                value={cso}
+                disabled
+              />
             </label>
 
             <label className={styles.containerFormField}>

@@ -15,6 +15,6 @@ export const splitDateTime = (iso: string) => {
   return {
     day: date.toISOString().slice(0, 10),
     time: date.toISOString().slice(11, 16),
-    date
+    date,
   };
 };

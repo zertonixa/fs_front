@@ -14,5 +14,5 @@ export const widgets = [
   {
     name: "Сообщения",
     value: "Reports",
-  }
+  },
 ];

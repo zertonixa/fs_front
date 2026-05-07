@@ -8,12 +8,11 @@ import { CreateButton } from "@/features/createBooking/ui";
 import { useBookingStore } from "@/shared/store/booking/booking";
 
 export const BookingSlotWidget = React.memo(() => {
-
-  const selectedStartTime = useBookingStore((state) => state.selectedStartTime)
-  const selectedEndTime = useBookingStore((state) => state.selectedEndTime)
-  const cso = useBookingStore((state) => state.cso)
-  const floor = useBookingStore((state) => state.floor)
-  const bookingType = useBookingStore((state) => state.bookingType)
+  const selectedStartTime = useBookingStore((state) => state.selectedStartTime);
+  const selectedEndTime = useBookingStore((state) => state.selectedEndTime);
+  const cso = useBookingStore((state) => state.cso);
+  const floor = useBookingStore((state) => state.floor);
+  const bookingType = useBookingStore((state) => state.bookingType);
 
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -22,7 +21,6 @@ export const BookingSlotWidget = React.memo(() => {
   );
 
   const handleToggle = (placeId: number) => {
-    
     setSelectedPlaces((prev) => {
       const next = new Set(prev);
       if (next.has(placeId)) {
@@ -32,7 +30,6 @@ export const BookingSlotWidget = React.memo(() => {
       }
       return next;
     });
-    
   };
 
   const isSelected = (placeId: number) => selectedPlaces.has(placeId);
@@ -57,11 +54,11 @@ export const BookingSlotWidget = React.memo(() => {
 
   const overlapsDates = useMemo(() => {
     if (!selectedStartTime || !selectedEndTime) return null;
-    
+
     try {
       const startDate = new Date(selectedStartTime);
       const endDate = new Date(selectedEndTime);
-      
+
       if (!isNaN(startDate.getTime()) && !isNaN(endDate.getTime())) {
         return { startDate, endDate };
       }
@@ -72,14 +69,14 @@ export const BookingSlotWidget = React.memo(() => {
   }, [selectedStartTime, selectedEndTime]);
 
   const overlapsQuery = useOverlaps(
-    overlapsDates 
+    overlapsDates
       ? {
           type: bookingType,
           floor: floor,
           cso: cso,
           starts_at: overlapsDates.startDate,
           ends_at: overlapsDates.endDate,
-          enabled: true
+          enabled: true,
         }
       : {
           type: bookingType,
@@ -87,8 +84,8 @@ export const BookingSlotWidget = React.memo(() => {
           cso: cso,
           starts_at: new Date(),
           ends_at: new Date(Date.now() + 3600000),
-          enabled: false
-        }
+          enabled: false,
+        },
   );
 
   const displayData = useMemo(() => {
@@ -98,15 +95,17 @@ export const BookingSlotWidget = React.memo(() => {
     return slotsQuery.data;
   }, [slotsQuery.data, overlapsQuery.data, overlapsDates]);
 
-  const isLoading = slotsQuery.isPending || (overlapsDates && overlapsQuery.isPending);
+  const isLoading =
+    slotsQuery.isPending || (overlapsDates && overlapsQuery.isPending);
   const hasError = slotsQuery.error || (overlapsDates && overlapsQuery.error);
 
   const bookingData = useMemo(() => {
-    if (!selectedStartTime || !selectedEndTime || selectedPlaces.size === 0) return null;
-    
+    if (!selectedStartTime || !selectedEndTime || selectedPlaces.size === 0)
+      return null;
+
     const slotIds: string[] = [];
-    displayData?.forEach(row => {
-      row.forEach(slot => {
+    displayData?.forEach((row) => {
+      row.forEach((slot) => {
         if (selectedPlaces.has(slot.place)) {
           if (slot.id) {
             slotIds.push(slot.id);
@@ -114,7 +113,7 @@ export const BookingSlotWidget = React.memo(() => {
         }
       });
     });
-    
+
     return {
       type: bookingType,
       floor: floor,
@@ -124,12 +123,20 @@ export const BookingSlotWidget = React.memo(() => {
       slot_ids: slotIds,
       selected_places: Array.from(selectedPlaces).map(String),
     };
-  }, [selectedStartTime, selectedEndTime, selectedPlaces, displayData, bookingType, floor, cso]);
+  }, [
+    selectedStartTime,
+    selectedEndTime,
+    selectedPlaces,
+    displayData,
+    bookingType,
+    floor,
+    cso,
+  ]);
 
   if (isLoading) {
     return (
       <div className={styles.container}>
-        <LoadingSpinner/>
+        <LoadingSpinner />
       </div>
     );
   }
@@ -137,7 +144,13 @@ export const BookingSlotWidget = React.memo(() => {
   if (hasError) {
     return (
       <div className={styles.container}>
-        <div style={{ textAlign: 'center', padding: '20px', color: 'var(--error)' }}>
+        <div
+          style={{
+            textAlign: "center",
+            padding: "20px",
+            color: "var(--error)",
+          }}
+        >
           Ошибка при загрузке слотов
         </div>
       </div>
@@ -147,7 +160,7 @@ export const BookingSlotWidget = React.memo(() => {
   if (!displayData || displayData.length === 0) {
     return (
       <div className={styles.container}>
-        <div style={{ textAlign: 'center', padding: '20px' }}>
+        <div style={{ textAlign: "center", padding: "20px" }}>
           Нет доступных слотов
         </div>
         <div className={styles.containerButton}>
@@ -168,9 +181,9 @@ export const BookingSlotWidget = React.memo(() => {
   const cols = displayData[0]?.length || 1;
 
   return (
-    <div className={styles.container} >
+    <div className={styles.container}>
       <div className={styles.containerGrid} style={{ ["--cols" as any]: cols }}>
-        {displayData.map((row, rowIndex) => 
+        {displayData.map((row, rowIndex) =>
           row.map((place) => (
             <BookingSlot
               key={`${rowIndex}-${place.place}`}
@@ -180,14 +193,16 @@ export const BookingSlotWidget = React.memo(() => {
               isDisabled={!place.isAvailable}
               onClick={() => handleToggle(place.place)}
             />
-          ))
+          )),
         )}
       </div>
       <div className={styles.containerButton}>
-          <CreateButton
-            bookingData={bookingData}
-            disabled={selectedPlaces.size === 0 || !selectedStartTime || !selectedEndTime}
-          />
+        <CreateButton
+          bookingData={bookingData}
+          disabled={
+            selectedPlaces.size === 0 || !selectedStartTime || !selectedEndTime
+          }
+        />
       </div>
     </div>
   );

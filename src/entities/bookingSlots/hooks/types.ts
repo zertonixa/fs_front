@@ -1,5 +1,5 @@
 export interface Slot {
-    id: string,
-    place: number,
-    isAvailable: boolean
+  id: string;
+  place: number;
+  isAvailable: boolean;
 }

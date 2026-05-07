@@ -67,11 +67,7 @@ axiosInstance.interceptors.response.use(
     isRefreshing = true;
 
     try {
-      await axios.post(
-        `${url}auth/refresh`,
-        {},
-        { withCredentials: true }
-      );
+      await axios.post(`${url}auth/refresh`, {}, { withCredentials: true });
 
       processQueue();
 
@@ -83,5 +79,5 @@ axiosInstance.interceptors.response.use(
     } finally {
       isRefreshing = false;
     }
-  }
+  },
 );

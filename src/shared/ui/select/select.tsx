@@ -37,20 +37,21 @@ export const CustomSelect = <T extends string>({
   }, []);
 
   const selectedLabel =
-    options.find((option) => option.value === value)?.label ?? placeholder ?? "Выбрать";
+    options.find((option) => option.value === value)?.label ??
+    placeholder ??
+    "Выбрать";
 
   return (
-    <div
-      ref={selectRef}
-      className={`${styles.select} ${className ?? ""}`}
-    >
+    <div ref={selectRef} className={`${styles.select} ${className ?? ""}`}>
       <button
         type="button"
         className={styles.selectTrigger}
         onClick={() => setIsOpen((prev) => !prev)}
       >
         <span>{selectedLabel}</span>
-        <span className={`${styles.selectArrow} ${isOpen ? styles.selectArrowOpen : ""}`}>
+        <span
+          className={`${styles.selectArrow} ${isOpen ? styles.selectArrowOpen : ""}`}
+        >
           ▾
         </span>
       </button>

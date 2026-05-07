@@ -43,7 +43,7 @@ export const Button = React.memo(
         color: "#fff",
       }}
     >
-      {!loading ? text : <LoadingSpinner/>}
+      {!loading ? text : <LoadingSpinner />}
     </button>
   ),
 );

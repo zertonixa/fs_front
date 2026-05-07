@@ -16,7 +16,6 @@ interface CreateButtonProps {
 }
 
 export const CreateButton = ({ bookingData, disabled }: CreateButtonProps) => {
-
   const navigate = useNavigate();
 
   const handleCreateBooking = () => {
@@ -30,7 +29,7 @@ export const CreateButton = ({ bookingData, disabled }: CreateButtonProps) => {
       ends_at: bookingData.ends_at,
       floor: bookingData.floor,
       slot_ids: bookingData.slot_ids,
-    })
+    });
   };
 
   const api = useBookingCreate(() => navigate("/"));

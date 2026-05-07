@@ -9,130 +9,134 @@ import { LoadingSpinner } from "@/shared/ui/button/loading/loading";
 import styles from "./menu.module.scss";
 
 type MenuProps = {
-    close: () => void;
+  close: () => void;
 };
 
 export type ReportFormValues = {
-    text: string;
-    files: File[];
+  text: string;
+  files: File[];
 };
 
 export const Menu = ({ close }: MenuProps) => {
-    const [mode, setMode] = useState<"history" | "create">("history");
-    const [selectedReportId, setSelectedReportId] = useState("");
+  const [mode, setMode] = useState<"history" | "create">("history");
+  const [selectedReportId, setSelectedReportId] = useState("");
 
-    const createReport = useCreateReport();
-    const reports = useMyReports();
+  const createReport = useCreateReport();
+  const reports = useMyReports();
 
-    const {
-        register,
-        control,
-        handleSubmit,
-        formState: { errors, isSubmitting },
-        reset,
-    } = useForm<ReportFormValues>({
-        defaultValues: {
-            text: "",
-            files: [],
-        },
+  const {
+    register,
+    control,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+    reset,
+  } = useForm<ReportFormValues>({
+    defaultValues: {
+      text: "",
+      files: [],
+    },
+  });
+
+  const isLoading = isSubmitting || createReport.isPending;
+
+  const selectedReport = useMemo(() => {
+    return (
+      reports.data?.find((report) => report.id === selectedReportId) ?? null
+    );
+  }, [reports.data, selectedReportId]);
+
+  const onSubmit = async (values: ReportFormValues) => {
+    const formData = new FormData();
+    formData.append("text", values.text.trim());
+
+    values.files.forEach((file) => {
+      formData.append("files", file);
     });
 
-    const isLoading = isSubmitting || createReport.isPending;
+    await createReport.mutateAsync(formData);
 
-    const selectedReport = useMemo(() => {
-        return reports.data?.find((report) => report.id === selectedReportId) ?? null;
-    }, [reports.data, selectedReportId]);
+    reset();
+    setMode("history");
+  };
 
-    const onSubmit = async (values: ReportFormValues) => {
-        const formData = new FormData();
-        formData.append("text", values.text.trim());
+  const errorMessage =
+    createReport.error?.response?.data?.detail ||
+    createReport.error?.message ||
+    null;
 
-        values.files.forEach((file) => {
-            formData.append("files", file);
-        });
+  const handleClose = !isLoading ? close : undefined;
 
-        await createReport.mutateAsync(formData);
+  return (
+    <div className={styles.container} onClick={handleClose}>
+      <div
+        className={styles.containerBody}
+        onClick={(e) => e.stopPropagation()}
+      >
+        {mode === "history" ? (
+          <div className={styles.containerContent}>
+            <div className={styles.containerHeader}>
+              <span className={styles.containerTitle}>Обращения</span>
 
-        reset();
-        setMode("history");
-    };
-
-    const errorMessage =
-        createReport.error?.response?.data?.detail ||
-        createReport.error?.message ||
-        null;
-
-    const handleClose = !isLoading ? close : undefined;
-
-    return (
-        <div className={styles.container} onClick={handleClose}>
-            <div
-                className={styles.containerBody}
-                onClick={(e) => e.stopPropagation()}
-            >
-                {mode === "history" ? (
-                    <div className={styles.containerContent}>
-                        <div className={styles.containerHeader}>
-                            <span className={styles.containerTitle}>Обращения</span>
-
-                            <button
-                                type="button"
-                                className={styles.containerAdd}
-                                onClick={() => setMode("create")}
-                                aria-label="Создать обращение"
-                            >
-                                +
-                            </button>
-                        </div>
-
-                        <div className={styles.containerCards}>
-                            {reports.isPending && <LoadingSpinner />}
-
-                            {reports.isError && (
-                                <span className={styles.containerState}>
-                                    Ошибка загрузки обращений
-                                </span>
-                            )}
-
-                            {!reports.isPending && !reports.isError && !reports.data?.length && (
-                                <span className={styles.containerState}>
-                                    Обращений пока нет
-                                </span>
-                            )}
-
-                            {reports.data?.map((report) => (
-                                <ReportCard
-                                    key={report.id}
-                                    id={report.id}
-                                    text={report.text}
-                                    status={report.status}
-                                    created_at={report.created_at}
-                                    onClick={(id) => setSelectedReportId(id)}
-                                />
-                            ))}
-                        </div>
-                    </div>
-                ) : (
-                    <MakeReport
-                        close={close}
-                        onBack={() => setMode("history")}
-                        isLoading={isLoading}
-                        errorMessage={errorMessage}
-                        register={register}
-                        control={control}
-                        errors={errors}
-                        onSubmit={handleSubmit(onSubmit)}
-                    />
-                )}
+              <button
+                type="button"
+                className={styles.containerAdd}
+                onClick={() => setMode("create")}
+                aria-label="Создать обращение"
+              >
+                +
+              </button>
             </div>
 
-            {selectedReportId && selectedReport && (
-                <ReportViewPopup
-                    report={selectedReport}
-                    canEdit={false}
-                    onClose={() => setSelectedReportId("")}
+            <div className={styles.containerCards}>
+              {reports.isPending && <LoadingSpinner />}
+
+              {reports.isError && (
+                <span className={styles.containerState}>
+                  Ошибка загрузки обращений
+                </span>
+              )}
+
+              {!reports.isPending &&
+                !reports.isError &&
+                !reports.data?.length && (
+                  <span className={styles.containerState}>
+                    Обращений пока нет
+                  </span>
+                )}
+
+              {reports.data?.map((report) => (
+                <ReportCard
+                  key={report.id}
+                  id={report.id}
+                  text={report.text}
+                  status={report.status}
+                  created_at={report.created_at}
+                  onClick={(id) => setSelectedReportId(id)}
                 />
-            )}
-        </div>
-    );
+              ))}
+            </div>
+          </div>
+        ) : (
+          <MakeReport
+            close={close}
+            onBack={() => setMode("history")}
+            isLoading={isLoading}
+            errorMessage={errorMessage}
+            register={register}
+            control={control}
+            errors={errors}
+            onSubmit={handleSubmit(onSubmit)}
+          />
+        )}
+      </div>
+
+      {selectedReportId && selectedReport && (
+        <ReportViewPopup
+          report={selectedReport}
+          canEdit={false}
+          onClose={() => setSelectedReportId("")}
+        />
+      )}
+    </div>
+  );
 };

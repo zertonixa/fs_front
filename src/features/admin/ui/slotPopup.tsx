@@ -23,13 +23,22 @@ export const SlotPopup = ({ isOpen, slot, onClose }: SlotPopupProps) => {
 
   return (
     <div className={styles.backdrop} onClick={onClose} role="presentation">
-      <div className={styles.container} onClick={(e) => e.stopPropagation()} role="dialog" aria-modal>
+      <div
+        className={styles.container}
+        onClick={(e) => e.stopPropagation()}
+        role="dialog"
+        aria-modal
+      >
         <div className={styles.containerHeader}>
           <div className={styles.containerHeaderTitle}>
             <span>Слот</span>
           </div>
 
-          <button className={styles.containerHeaderClose} onClick={onClose} type="button">
+          <button
+            className={styles.containerHeaderClose}
+            onClick={onClose}
+            type="button"
+          >
             ✕
           </button>
         </div>
@@ -55,7 +64,11 @@ export const SlotPopup = ({ isOpen, slot, onClose }: SlotPopupProps) => {
             type="button"
             disabled={toggleSlotStatus.isPending || deleteSlot.isPending}
           >
-            {toggleSlotStatus.isPending ? "..." : slot.isAvailable ? "Выключить" : "Включить"}
+            {toggleSlotStatus.isPending
+              ? "..."
+              : slot.isAvailable
+                ? "Выключить"
+                : "Включить"}
           </button>
 
           <button

@@ -35,14 +35,20 @@ describe("basic ui components", () => {
             { value: "two", label: "Второй" },
           ]}
         />
-        <button type="button" id="outside">outside</button>
+        <button type="button" id="outside">
+          outside
+        </button>
       </div>,
     );
 
     click(document.querySelector("button")!);
     expect(document.body.textContent).toContain("Второй");
 
-    click(Array.from(document.querySelectorAll("button")).find((button) => button.textContent?.includes("Второй"))!);
+    click(
+      Array.from(document.querySelectorAll("button")).find((button) =>
+        button.textContent?.includes("Второй"),
+      )!,
+    );
     expect(onChange).toHaveBeenCalledWith("two");
     expect(document.body.textContent).not.toContain("Второй▾");
 
@@ -53,13 +59,17 @@ describe("basic ui components", () => {
 
   it("Options показывает варианты и возвращает выбранный номер ЦСО", () => {
     const onValueChanged = vi.fn();
-    render(<Options values={[1, 3]} selected={4} onValueChanged={onValueChanged} />);
+    render(
+      <Options values={[1, 3]} selected={4} onValueChanged={onValueChanged} />,
+    );
 
     expect(document.body.textContent).toContain("ЦСО №4");
     click(byExactText("ЦСО №4"));
     expect(document.body.textContent).toContain("ЦСО №1");
 
-    const option = Array.from(document.querySelectorAll("div")).find((node) => node.textContent === "ЦСО №3")!;
+    const option = Array.from(document.querySelectorAll("div")).find(
+      (node) => node.textContent === "ЦСО №3",
+    )!;
     click(option);
 
     expect(onValueChanged).toHaveBeenCalledWith(3);
@@ -68,16 +78,38 @@ describe("basic ui components", () => {
   it("BookingSlot вызывает onClick, поддерживает disabled и режим входа", () => {
     const onClick = vi.fn();
     const { rerender, container } = render(
-      <BookingSlot place={2} isSelected={false} isDisabled={false} isEnter={false} onClick={onClick} />,
+      <BookingSlot
+        place={2}
+        isSelected={false}
+        isDisabled={false}
+        isEnter={false}
+        onClick={onClick}
+      />,
     );
 
     click(document.querySelector("button")!);
     expect(onClick).toHaveBeenCalledTimes(1);
 
-    rerender(<BookingSlot place={2} isSelected isDisabled isEnter={false} onClick={onClick} />);
+    rerender(
+      <BookingSlot
+        place={2}
+        isSelected
+        isDisabled
+        isEnter={false}
+        onClick={onClick}
+      />,
+    );
     expect(document.querySelector("button")?.disabled).toBe(true);
 
-    rerender(<BookingSlot place={2} isSelected={false} isDisabled={false} isEnter onClick={onClick} />);
+    rerender(
+      <BookingSlot
+        place={2}
+        isSelected={false}
+        isDisabled={false}
+        isEnter
+        onClick={onClick}
+      />,
+    );
     expect(container.querySelector("img")).not.toBeNull();
   });
 
@@ -100,10 +132,16 @@ describe("basic ui components", () => {
     );
 
     expect(document.body.textContent).toContain("Статус: Активен");
-    click(document.querySelector('[aria-label="Переключить роль администратора"]')!);
+    click(
+      document.querySelector('[aria-label="Переключить роль администратора"]')!,
+    );
     expect(onToggleAdmin).toHaveBeenCalledTimes(1);
 
-    click(Array.from(document.querySelectorAll("button")).find((button) => button.textContent === "Забанить")!);
+    click(
+      Array.from(document.querySelectorAll("button")).find(
+        (button) => button.textContent === "Забанить",
+      )!,
+    );
     expect(onBan).toHaveBeenCalledTimes(1);
 
     rerender(
@@ -120,7 +158,11 @@ describe("basic ui components", () => {
     );
 
     expect(document.body.textContent).toContain("Статус: Заблокирован");
-    click(Array.from(document.querySelectorAll("button")).find((button) => button.textContent === "Разбанить")!);
+    click(
+      Array.from(document.querySelectorAll("button")).find(
+        (button) => button.textContent === "Разбанить",
+      )!,
+    );
     expect(onUnBan).toHaveBeenCalledTimes(1);
   });
 
@@ -142,10 +184,12 @@ describe("basic ui components", () => {
       />,
     );
 
-    const adminToggle = document.querySelector<HTMLButtonElement>('[aria-label="Переключить роль администратора"]')!;
-    const banButton = Array.from(document.querySelectorAll<HTMLButtonElement>("button")).find((button) =>
-      button.textContent?.includes("Забанить"),
+    const adminToggle = document.querySelector<HTMLButtonElement>(
+      '[aria-label="Переключить роль администратора"]',
     )!;
+    const banButton = Array.from(
+      document.querySelectorAll<HTMLButtonElement>("button"),
+    ).find((button) => button.textContent?.includes("Забанить"))!;
 
     expect(adminToggle.disabled).toBe(true);
     expect(banButton.disabled).toBe(true);
@@ -157,7 +201,6 @@ describe("basic ui components", () => {
     expect(onBan).not.toHaveBeenCalled();
     expect(onUnBan).not.toHaveBeenCalled();
   });
-
 
   it("BookingCard форматирует бронь и передает id при клике", () => {
     const onClick = vi.fn();
@@ -175,7 +218,9 @@ describe("basic ui components", () => {
       />,
     );
 
-    expect(document.body.textContent).toContain("Стиральная машина, №1,2, 5 этаж");
+    expect(document.body.textContent).toContain(
+      "Стиральная машина, №1,2, 5 этаж",
+    );
     expect(document.querySelector('img[alt="accept"]')).not.toBeNull();
 
     click(document.querySelector('img[alt="icon"]')!.parentElement!);
@@ -199,10 +244,19 @@ describe("basic ui components", () => {
     click(byExactText("..."));
     expect(document.body.textContent).toContain("11");
 
-    click(Array.from(document.querySelectorAll("button")).find((button) => button.textContent?.includes("11"))!);
-    const minuteButton = Array.from(document.querySelectorAll("button")).find((button) => button.textContent?.includes("30"))!;
+    click(
+      Array.from(document.querySelectorAll("button")).find((button) =>
+        button.textContent?.includes("11"),
+      )!,
+    );
+    const minuteButton = Array.from(document.querySelectorAll("button")).find(
+      (button) => button.textContent?.includes("30"),
+    )!;
     click(minuteButton);
 
-    expect(onValueChanged).toHaveBeenCalledWith("2026-04-24T08:30:00.000Z", "startTime");
+    expect(onValueChanged).toHaveBeenCalledWith(
+      "2026-04-24T08:30:00.000Z",
+      "startTime",
+    );
   });
 });
