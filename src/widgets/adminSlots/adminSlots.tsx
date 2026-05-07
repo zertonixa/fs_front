@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 import { useSlots } from "@/entities/bookingSlots/hooks/hooks";
 import type { Slot } from "@/entities/bookingSlots/hooks/types";
